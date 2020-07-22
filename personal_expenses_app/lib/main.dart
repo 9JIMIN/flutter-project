@@ -50,30 +50,15 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  // String titleInput;
-  // String amountInput;
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transaction> _userTransactions = [
-    // Transaction(
-    //   id: 't1',
-    //   title: 'New Shoes',
-    //   amount: 69.99,
-    //   date: DateTime.now(),
-    // ),
-    // Transaction(
-    //   id: 't2',
-    //   title: 'Weekly Groceries',
-    //   amount: 16.53,
-    //   date: DateTime.now(),
-    // ),
-  ];
+  final List<Transaction> _userTransactions = [];
   bool _showChart = false;
 
-  List<Transaction> get _recentTransactions {
+  List<Transaction> get _recentTransactions { // get의 정확한 의미가 궁금.
     return _userTransactions.where((tx) {
       return tx.date.isAfter(
         DateTime.now().subtract(
@@ -125,14 +110,9 @@ class _MyHomePageState extends State<MyHomePage> {
             middle: Text(
               'Personal Expenses',
             ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                GestureDetector(
-                  child: Icon(CupertinoIcons.add),
-                  onTap: () => _startAddNewTransaction(context),
-                ),
-              ],
+            trailing: GestureDetector( // 여기에 원래는 Row가 있었는데 왜??
+              child: Icon(CupertinoIcons.add),
+              onTap: () => _startAddNewTransaction(context),
             ),
           )
         : AppBar(
@@ -149,14 +129,13 @@ class _MyHomePageState extends State<MyHomePage> {
     final txListWidget = Container(
       height: (mediaQuery.size.height -
               appBar.preferredSize.height -
-              mediaQuery.padding.top) *
+              mediaQuery.padding.top) * // 전체 높이에서 appBar의 높이, 젤위에 시계같은기 있는 상태바 높이를 뺀 값.
           0.7,
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
-    final pageBody = SafeArea(
+    final pageBody = SafeArea( // 동그란 엣지에서 화면 안 짤리게 해줌.
       child: SingleChildScrollView(
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             if (isLandscape)
