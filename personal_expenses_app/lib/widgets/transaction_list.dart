@@ -11,9 +11,9 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return transactions.isEmpty
-        ? LayoutBuilder(builder: (ctx, constraints) {
-            return Column(
+    return transactions.isEmpty 
+        ? LayoutBuilder(builder: (ctx, constraints) { 
+            return Column( // 레이아웃빌더는 앱의 크기를 알 수 있게 해준다. constraints
               children: <Widget>[
                 Text(
                   'No transactions added yet!',
@@ -31,7 +31,7 @@ class TransactionList extends StatelessWidget {
               ],
             );
           })
-        : ListView.builder(
+        : ListView.builder( // 내용이 다이나믹하게 추가되도록 ListView.builder, itemBuilder를 쓴다.
             itemBuilder: (ctx, index) {
               return Card(
                 elevation: 5,

@@ -58,7 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [];
   bool _showChart = false;
 
-  List<Transaction> get _recentTransactions { // get의 정확한 의미가 궁금.
+  List<Transaction> get _recentTransactions {
+    // get의 정확한 의미가 궁금.
     return _userTransactions.where((tx) {
       return tx.date.isAfter(
         DateTime.now().subtract(
@@ -110,7 +111,8 @@ class _MyHomePageState extends State<MyHomePage> {
             middle: Text(
               'Personal Expenses',
             ),
-            trailing: GestureDetector( // 여기에 원래는 Row가 있었는데 왜??
+            trailing: GestureDetector(
+              // 여기에 원래는 Row가 있었는데 왜??
               child: Icon(CupertinoIcons.add),
               onTap: () => _startAddNewTransaction(context),
             ),
@@ -129,17 +131,19 @@ class _MyHomePageState extends State<MyHomePage> {
     final txListWidget = Container(
       height: (mediaQuery.size.height -
               appBar.preferredSize.height -
-              mediaQuery.padding.top) * // 전체 높이에서 appBar의 높이, 젤위에 시계같은기 있는 상태바 높이를 뺀 값.
+              mediaQuery.padding
+                  .top) * // 전체 높이에서 appBar의 높이, 젤위에 시계같은기 있는 상태바 높이를 뺀 값.
           0.7,
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
-    final pageBody = SafeArea( // 동그란 엣지에서 화면 안 짤리게 해줌.
+    final pageBody = SafeArea(
+      // 동그란 엣지에서 화면 안 짤리게 해줌.
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             if (isLandscape)
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
@@ -157,15 +161,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ],
               ),
-            if (!isLandscape)
-              Container(
-                height: (mediaQuery.size.height -
-                        appBar.preferredSize.height -
-                        mediaQuery.padding.top) *
-                    0.3,
-                child: Chart(_recentTransactions),
-              ),
-            if (!isLandscape) txListWidget,
             if (isLandscape)
               _showChart
                   ? Container(
@@ -175,7 +170,16 @@ class _MyHomePageState extends State<MyHomePage> {
                           0.7,
                       child: Chart(_recentTransactions),
                     )
-                  : txListWidget
+                  : txListWidget,
+            if (!isLandscape)
+              Container(
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.3,
+                child: Chart(_recentTransactions),
+              ),
+            if (!isLandscape) txListWidget,
           ],
         ),
       ),
@@ -190,12 +194,10 @@ class _MyHomePageState extends State<MyHomePage> {
             body: pageBody,
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
-            floatingActionButton: Platform.isIOS
-                ? Container()
-                : FloatingActionButton(
-                    child: Icon(Icons.add),
-                    onPressed: () => _startAddNewTransaction(context),
-                  ),
+            floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () => _startAddNewTransaction(context),
+            ),
           );
   }
 }
