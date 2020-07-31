@@ -23,10 +23,12 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _isInit = true;
   var _isLoading = false;
 
-  // 위젯이 만들어질때 한번만 실행됨.
-  // 그렇기에, 데이터 패치같은 시간많이 드는 작업을 함. 매번만들어질때 마다 안하고,
   @override
   void initState() {
+    // Provider.of<Products>(context).fetchAndSetProducts(); // WON'T WORK!
+    // Future.delayed(Duration.zero).then((_) {
+    //   Provider.of<Products>(context).fetchAndSetProducts();
+    // });
     super.initState();
   }
 
@@ -76,10 +78,6 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                   ),
                 ],
           ),
-          // Consumner의 builder는 ChangeNotifier가 바뀔때 실행된다. 
-          // 즉, notifyListener()가 실행될때, 해당 Notifier 의 모든 builder가 실행되는 것.
-          // builer의 argu는 context, 그리고 ChangeNotifier, 마지막으로 child.
-          // Notifier가 변할 때, 같이 변하지 않는 큰 위젯이 아래에 있을 때, 사용됨.
           Consumer<Cart>(
             builder: (_, cart, ch) => Badge(
                   child: ch,
