@@ -19,7 +19,7 @@ class _TabsScreenState extends State<TabsScreen> {
   int _selectedPageIndex = 0;
 
   @override
-  void initState() {
+  void initState() { // 이걸 왜 initState로 했을까. 아마 데이터 초기화 그런거 같은데..
     _pages = [
       {
         'page': CategoriesScreen(),
@@ -48,7 +48,7 @@ class _TabsScreenState extends State<TabsScreen> {
       drawer: MainDrawer(),
       body: _pages[_selectedPageIndex]['page'],
       bottomNavigationBar: BottomNavigationBar(
-        onTap: _selectPage,
+        onTap: _selectPage, // bottomNavigationBar에서 인덱스가 알아서 들어간다.
         backgroundColor: Theme.of(context).primaryColor,
         unselectedItemColor: Colors.white,
         selectedItemColor: Theme.of(context).accentColor,

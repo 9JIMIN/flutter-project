@@ -32,6 +32,8 @@ class TransactionList extends StatelessWidget {
             );
           })
         : ListView.builder( // 내용이 다이나믹하게 추가되도록 ListView.builder, itemBuilder를 쓴다.
+        // 위젯 트리에 새로운 뭔가를 넣으면, builder를 쓴다. itembuilder같은것도.
+        // 그리고 builder는 새로운 위젯이기에 context를 받는다. 
             itemBuilder: (ctx, index) {
               return Card(
                 elevation: 5,

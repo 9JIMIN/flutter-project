@@ -34,7 +34,7 @@ class ChartBar extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  FractionallySizedBox(
+                  FractionallySizedBox( // 상대적 비율로 위젯 크기 조절가능.
                     heightFactor: spendingPctOfTotal,
                     child: Container(
                       decoration: BoxDecoration(

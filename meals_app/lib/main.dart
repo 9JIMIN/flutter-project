@@ -29,6 +29,8 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _filters = filterData;
 
+      // 필터링.
+      // where로 리스트요소를 받아서 불리언 값을 리턴하는 함수 통과. True만 남게됨.
       _availableMeals = DUMMY_MEALS.where((meal) {
         if (_filters['gluten'] && !meal.isGlutenFree) {
           return false;
@@ -49,7 +51,7 @@ class _MyAppState extends State<MyApp> {
 
   void _toggleFavorite(String mealId) {
     final existingIndex =
-        _favoriteMeals.indexWhere((meal) => meal.id == mealId);
+        _favoriteMeals.indexWhere((meal) => meal.id == mealId); // 없으면 -1
     if (existingIndex >= 0) {
       setState(() {
         _favoriteMeals.removeAt(existingIndex);

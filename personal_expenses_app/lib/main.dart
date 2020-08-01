@@ -85,8 +85,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _startAddNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
-      context: ctx,
-      builder: (_) {
+      context: ctx, 
+      // context는 Navigator, Theme같은거를 참고하기 위해 필요하다. 
+      // 위젯트리에 들어가고, 나가는 거니까, context가 있어야하지.
+      builder: (_) { // builder는 showModalBottomSheet에 넣을 위젯을 리턴한다.
         return GestureDetector(
           onTap: () {},
           child: NewTransaction(_addNewTransaction),

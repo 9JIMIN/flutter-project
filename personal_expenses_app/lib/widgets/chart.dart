@@ -25,13 +25,14 @@ class Chart extends StatelessWidget {
       }
 
       return {
-        'day': DateFormat.E().format(weekDay).substring(0, 1),
+        'day': DateFormat.E().format(weekDay).substring(0, 3),
         'amount': totalSum,
       };
     }).reversed.toList();
   }
 
   double get totalSpending {
+    // 리스트.fold(초기값, (암거나, 리스트요소)=> 암거나+리스트요소) .. 리스트의 특정값의 총합을 구할 수 있음.
     return groupedTransactionValues.fold(0.0, (sum, item) {
       return sum + item['amount'];
     });

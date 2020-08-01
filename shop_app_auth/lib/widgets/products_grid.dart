@@ -16,7 +16,7 @@ class ProductsGrid extends StatelessWidget {
     return GridView.builder(
       padding: const EdgeInsets.all(10.0),
       itemCount: products.length,
-      itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+      itemBuilder: (ctx, i) => ChangeNotifierProvider.value( // 이미 만들어진 프로바이더 인스턴스 값을 변경할때.
             // builder: (c) => products[i],
             value: products[i],
             child: ProductItem(
