@@ -26,13 +26,16 @@ class _ImageInputState extends State<ImageInput> {
     if (image == null) { // 사진 안찍고 나가는 경우의 에러 헨들링.
       return;
     }
-    final imageFile = File(image.path);
+    final imageFile = File(image.path); // 받은 image는 PickedFile이라는 특수한 타입이다. 그래서 File로 변경해줘야함.
     setState(() {
       _storedImage = imageFile;
     });
-    final appDir = await syspaths.getApplicationDocumentsDirectory();
-    final fileName = path.basename(imageFile.path);
-    final savedImage = await imageFile.copy('${appDir.path}/$fileName');
+
+    // 앱이 하드에 맘대로 파일을 쓸 수는 없다. 
+    // 정해진 앱의 경로에만 파일을 쓸 수 있음. 그래서 앱을 삭제하거나하면 OS가 알아서 해당 경로의 파일을 삭제함.
+    final appDir = await syspaths.getApplicationDocumentsDirectory(); // Future를 리턴해서 await
+    final fileName = path.basename(imageFile.path); // 카메라가 자동으로 주는 파일명으로 저장.
+    final savedImage = await imageFile.copy('${appDir.path}/$fileName'); // 최종저장된 이미지. 다른데서 사용가능.
     
     widget.onSelectedImage(savedImage);
   }

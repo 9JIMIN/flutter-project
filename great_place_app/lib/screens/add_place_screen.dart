@@ -16,6 +16,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
   final _titleController = TextEditingController();
   File _pickedImage;
 
+  // 이미지를 프라이빗 변수로 받아서, 프로바이더에 저장한다.
   void _selectImage(File pickedImage) {
     _pickedImage = pickedImage;
   }

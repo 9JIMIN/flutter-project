@@ -27,6 +27,7 @@ dependencies:
   image_picker:
   path_provider:
   path:
+  sqflite:
 
 
   # The following adds the Cupertino Icons font to your application.
