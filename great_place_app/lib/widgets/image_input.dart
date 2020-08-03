@@ -47,6 +47,7 @@ class _ImageInputState extends State<ImageInput> {
         Container(
           width: 150,
           height: 100,
+          alignment: Alignment.center,
           decoration: BoxDecoration(
             border: Border.all(
               width: 1,
@@ -57,13 +58,12 @@ class _ImageInputState extends State<ImageInput> {
               ? Image.file(
                   _storedImage,
                   fit: BoxFit.cover,
-                  width: double.infinity,
+                  width: double.infinity, // parent가 허용하는 가장 큰 크기
                 )
               : Text(
                   'No Image',
                   textAlign: TextAlign.center,
                 ),
-          alignment: Alignment.center,
         ),
         SizedBox(
           width: 10,
