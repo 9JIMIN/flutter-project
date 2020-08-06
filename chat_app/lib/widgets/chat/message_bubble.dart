@@ -75,9 +75,11 @@ class MessageBubble extends StatelessWidget {
         ),
         Positioned(
           top: 0,
-          left: isMe ? null :120,
-          right: isMe ? 120: null,
-          child: CircleAvatar(backgroundImage: NetworkImage(userImage),),
+          left: isMe ? null : 120,
+          right: isMe ? 120 : null,
+          child: CircleAvatar(
+            backgroundImage: NetworkImage(userImage),
+          ),
         ),
       ],
     );

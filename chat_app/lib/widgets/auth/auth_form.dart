@@ -79,6 +79,9 @@ class _AuthFormState extends State<AuthForm> {
                     key: ValueKey(
                         'email'), // 키가 없으면, login-signup전환시 값을 구분못해서, 다른필드에 값이 들어가게 된다.
                     keyboardType: TextInputType.emailAddress,
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.none,
+                    enableSuggestions: false,
                     decoration: InputDecoration(labelText: 'Email address'),
                     validator: (value) {
                       if (value.isEmpty || !value.contains('@')) {
@@ -94,6 +97,9 @@ class _AuthFormState extends State<AuthForm> {
                     TextFormField(
                       key: ValueKey('username'),
                       decoration: InputDecoration(labelText: 'Username'),
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.none,
+                      enableSuggestions: false,
                       validator: (value) {
                         if (value.length < 4) {
                           return 'Username must be at least 4 characters long.';
