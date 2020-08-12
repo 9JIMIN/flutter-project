@@ -2,20 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import './widgets/new_transaction.dart';
 import './widgets/transaction_list.dart';
 import './widgets/chart.dart';
 import './models/transaction.dart';
 
-void main() {
-  // SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.portraitUp,
-  //   DeviceOrientation.portraitUp,
-  // ]);
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
@@ -25,7 +18,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.purple,
           accentColor: Colors.amber,
-          // errorColor: Colors.red,
           fontFamily: 'Quicksand',
           textTheme: ThemeData.light().textTheme.copyWith(
                 headline6: TextStyle(
@@ -70,7 +62,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _addNewTransaction(
-      String txTitle, double txAmount, DateTime chosenDate) {
+    String txTitle,
+    double txAmount,
+    DateTime chosenDate,
+  ) {
     final newTx = Transaction(
       title: txTitle,
       amount: txAmount,
@@ -85,10 +80,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _startAddNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
-      context: ctx, 
-      // context는 Navigator, Theme같은거를 참고하기 위해 필요하다. 
+      context: ctx,
+      // context는 Navigator, Theme같은거를 참고하기 위해 필요하다.
       // 위젯트리에 들어가고, 나가는 거니까, context가 있어야하지.
-      builder: (_) { // builder는 showModalBottomSheet에 넣을 위젯을 리턴한다.
+      builder: (_) {
+        // builder는 showModalBottomSheet에 넣을 위젯을 리턴한다.
         return GestureDetector(
           onTap: () {},
           child: NewTransaction(_addNewTransaction),
@@ -103,6 +99,9 @@ class _MyHomePageState extends State<MyHomePage> {
       _userTransactions.removeWhere((tx) => tx.id == id);
     });
   }
+
+  // build내부에 정의되는 변수들은 Context를 이용하는 위짓들.
+  // state에서 정의되는거랑, build에서 정의되는거랑 차이점.
 
   @override
   Widget build(BuildContext context) {
@@ -130,12 +129,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ],
           );
+    final fullHeight = mediaQuery.size.height -
+        appBar.preferredSize.height -
+        mediaQuery.padding.top;
     final txListWidget = Container(
-      height: (mediaQuery.size.height -
-              appBar.preferredSize.height -
-              mediaQuery.padding
-                  .top) * // 전체 높이에서 appBar의 높이, 젤위에 시계같은기 있는 상태바 높이를 뺀 값.
-          0.7,
+      height: fullHeight * 0.7,
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
     final pageBody = SafeArea(
@@ -146,13 +144,12 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             if (isLandscape)
               Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
                     'Show Chart',
                     style: Theme.of(context).textTheme.headline6,
                   ),
-                  Switch.adaptive(
+                  Switch.adaptive( // 플랫폼에 맞는 스위치를 생성해서 adaptive
                     activeColor: Theme.of(context).accentColor,
                     value: _showChart,
                     onChanged: (val) {
@@ -166,19 +163,13 @@ class _MyHomePageState extends State<MyHomePage> {
             if (isLandscape)
               _showChart
                   ? Container(
-                      height: (mediaQuery.size.height -
-                              appBar.preferredSize.height -
-                              mediaQuery.padding.top) *
-                          0.7,
+                      height: fullHeight * 0.7,
                       child: Chart(_recentTransactions),
                     )
                   : txListWidget,
             if (!isLandscape)
               Container(
-                height: (mediaQuery.size.height -
-                        appBar.preferredSize.height -
-                        mediaQuery.padding.top) *
-                    0.3,
+                height: fullHeight * 0.3,
                 child: Chart(_recentTransactions),
               ),
             if (!isLandscape) txListWidget,
