@@ -35,15 +35,15 @@
 
 ### 1-3. Learn
 - Dart, flutter Basic (문법, stful, stless..)
-    
+  
     
 ## 2. Personal Expense app
 
 ### 2-1. Screen shot
 <p float="left">
-  <img src="./images/exp-2.jpg" width="300" />
-  <img src="./images/exp-3.jpg" width="300" /> 
-  <img src="./images/exp-4.jpg" width="300" /> 
+  <img src="./images/exp-2.jpg" width="200" />
+  <img src="./images/exp-3.jpg" width="200" /> 
+  <img src="./images/exp-4.jpg" width="200" /> 
 </p>
 
 ### 2-2. Description
@@ -60,9 +60,34 @@
 - 함수를 만드는 방법, 메소드 이용방법
 - 스타일링
 - for, if등의 다트 문법
-   
+
+
 
 ## 3. Meals app
+
+### 3-1. Screen shot
+
+<img src="./images/meal-2.jpg" width="1200" />
+
+
+
+### 3-2. Description
+
+- MyApp에 필터링, favorite추가 등의 함수와 필터링된 meals리스트, favorite meals가 정의되어있음. 
+  그 함수와 그렇게 만들어진 meal리스트를 각 screen에 Navigation을 통해 전달을 한다. 
+- 기본 뷰는 TabScreen이다. 바닥에 네비바로 전체 카테고리 또는 좋아요한 meals 리스트로 이동할 수 있다. 
+- 전체 카테고리는 더미 데이터를 받아서 쓰고, 카테고리 아이템을 따로 만들어서 그리드를 완성한다. 
+  특정 카테고리를 누르면, 해당 카테고리에 속하는 meals 리스트가 나온다. 
+- 리스트 중 하나를 클릭하면, 디테일페이지로 이동하고 거기서 좋아요를 할 수 있다. 
+- Drawer에서는 필터링을 설정할 수 있다. 
+
+<img src='./images/meal-1.jpg'>
+
+
+
+### 3.3 Learn
+
+여러 스크린이 있는 앱에서 Navigation을 어떻게 하는지. 각 스크린에 변수를 넘겨주는 방법.
 
 
 

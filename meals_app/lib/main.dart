@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _toggleFavorite(String mealId) {
-    final existingIndex =
+    final int existingIndex = // 그냥 where는 요소를 반환하고, indexwhere는 인덱스를 반환함.
         _favoriteMeals.indexWhere((meal) => meal.id == mealId); // 없으면 -1
     if (existingIndex >= 0) {
       setState(() {
@@ -66,7 +66,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   bool _isMealFavorite(String id) {
-    return _favoriteMeals.any((meal) => meal.id == id);
+    return _favoriteMeals.any((meal) => meal.id == id);// 전체 iter를 검색, 있으면 True
   }
 
   @override

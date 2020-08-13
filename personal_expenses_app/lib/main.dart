@@ -66,15 +66,13 @@ class _MyHomePageState extends State<MyHomePage> {
     double txAmount,
     DateTime chosenDate,
   ) {
-    final newTx = Transaction(
-      title: txTitle,
-      amount: txAmount,
-      date: chosenDate,
-      id: DateTime.now().toString(),
-    );
-
     setState(() {
-      _userTransactions.add(newTx);
+      _userTransactions.add(Transaction(
+        title: txTitle,
+        amount: txAmount,
+        date: chosenDate,
+        id: DateTime.now().toString(),
+      ));
     });
   }
 
@@ -149,7 +147,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     'Show Chart',
                     style: Theme.of(context).textTheme.headline6,
                   ),
-                  Switch.adaptive( // 플랫폼에 맞는 스위치를 생성해서 adaptive
+                  Switch.adaptive(
+                    // 플랫폼에 맞는 스위치를 생성해서 adaptive
                     activeColor: Theme.of(context).accentColor,
                     value: _showChart,
                     onChanged: (val) {
