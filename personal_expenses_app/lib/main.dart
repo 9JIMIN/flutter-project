@@ -16,26 +16,27 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Personal Expenses',
       theme: ThemeData(
-          primarySwatch: Colors.purple,
-          accentColor: Colors.amber,
-          fontFamily: 'Quicksand',
+        primarySwatch: Colors.purple,
+        accentColor: Colors.amber,
+        fontFamily: 'Quicksand',
+        textTheme: ThemeData.light().textTheme.copyWith(
+              headline6: TextStyle(
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+              button: TextStyle(color: Colors.white),
+            ),
+        appBarTheme: AppBarTheme(
           textTheme: ThemeData.light().textTheme.copyWith(
                 headline6: TextStyle(
                   fontFamily: 'OpenSans',
                   fontWeight: FontWeight.bold,
-                  fontSize: 18,
+                  fontSize: 20,
                 ),
-                button: TextStyle(color: Colors.white),
               ),
-          appBarTheme: AppBarTheme(
-            textTheme: ThemeData.light().textTheme.copyWith(
-                  headline6: TextStyle(
-                    fontFamily: 'OpenSans',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-          )),
+        ),
+      ),
       home: MyHomePage(),
     );
   }
@@ -51,7 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _showChart = false;
 
   List<Transaction> get _recentTransactions {
-    // get의 정확한 의미가 궁금.
     return _userTransactions.where((tx) {
       return tx.date.isAfter(
         DateTime.now().subtract(
@@ -67,12 +67,14 @@ class _MyHomePageState extends State<MyHomePage> {
     DateTime chosenDate,
   ) {
     setState(() {
-      _userTransactions.add(Transaction(
-        title: txTitle,
-        amount: txAmount,
-        date: chosenDate,
-        id: DateTime.now().toString(),
-      ));
+      _userTransactions.add(
+        Transaction(
+          title: txTitle,
+          amount: txAmount,
+          date: chosenDate,
+          id: DateTime.now().toString(),
+        ),
+      );
     });
   }
 

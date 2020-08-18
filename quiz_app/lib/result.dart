@@ -28,6 +28,7 @@ class Result extends StatelessWidget {
             style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
+          Text(resultScore.toString()),
           FlatButton(
             child: Text('Restart Quiz!'),
             color: Colors.black54,

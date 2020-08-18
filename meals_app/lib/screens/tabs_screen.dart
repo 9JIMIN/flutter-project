@@ -19,7 +19,10 @@ class _TabsScreenState extends State<TabsScreen> {
   int _selectedPageIndex = 0;
 
   @override
-  void initState() { // 이걸 왜 initState로 했을까. 아마 데이터 초기화 그런거 같은데..
+  void initState() { 
+    // 바로 _pages에 넣을 수 없다. widget.함수는 그렇게 쓸 수 없다.
+    // widget요소는 initState()가 발동되기 전에 정의된다. 그래서 이렇게 하는 것이다.
+    super.initState();
     _pages = [
       {
         'page': CategoriesScreen(),
@@ -30,7 +33,6 @@ class _TabsScreenState extends State<TabsScreen> {
         'title': 'Your Favorite',
       },
     ];
-    super.initState();
   }
 
   void _selectPage(int index) {

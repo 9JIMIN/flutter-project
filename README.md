@@ -93,6 +93,36 @@
 
 ## 4. Shop app
 
+### 4-1. Screen shot
+
+<img src='./images/shop-2.jpg' width=1000>
+
+
+
+### 4-2. Description
+
+firebase - authentication 기능을 통한 유저관리.
+firebase - database 기능을 통한 데이스 관리.
+provider를 통한 상태관리.
+
+기본적인 쇼핑앱의 기능을 구현함. 
+
+- 제품 오버뷰 (좋아요 기능)
+- 카트에 담기
+- 주문하기
+- 제품 등록 및 수정 기능
+
+<img src='./images/shop-1.jpg' width = 1000>
+
+
+
+### 4-3. Learn
+
+- firebase 연동하기
+- http 요청 보내기
+- provider를 통한 상태관리
+- 애니메이션
+
 
 
 ## 5. Great Place app

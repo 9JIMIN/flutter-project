@@ -66,7 +66,7 @@ class _NewTransactionState extends State<NewTransaction> {
             top: 10,
             left: 10,
             right: 10,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 30,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 50,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -81,7 +81,7 @@ class _NewTransactionState extends State<NewTransaction> {
                 keyboardType: TextInputType.number,
               ),
               Container(
-                height: 70,
+                height: 90,
                 child: Row(
                   children: <Widget>[
                     Expanded(

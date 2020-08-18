@@ -10,6 +10,9 @@ import './models/meal.dart';
 
 void main() => runApp(MyApp());
 
+// 왜 expense앱과 달리, MyApp을 Stateful로 만들었을까..
+// 그 이유는 MaterialApp에서 routes를 지정할 수 있기에 그런 것 같다.
+// 각 routes에 인자를 넣어줘야하는데, 그걸 MyApp-MaterialApp에서만 할 수 있다.
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -28,7 +31,6 @@ class _MyAppState extends State<MyApp> {
   void _setFilters(Map<String, bool> filterData) {
     setState(() {
       _filters = filterData;
-
       // 필터링.
       // where로 리스트요소를 받아서 불리언 값을 리턴하는 함수 통과. True만 남게됨.
       _availableMeals = DUMMY_MEALS.where((meal) {
@@ -66,7 +68,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   bool _isMealFavorite(String id) {
-    return _favoriteMeals.any((meal) => meal.id == id);// 전체 iter를 검색, 있으면 True
+    return _favoriteMeals.any((meal) => meal.id == id); // 전체 iter를 검색, 있으면 True
   }
 
   @override
@@ -79,17 +81,18 @@ class _MyAppState extends State<MyApp> {
         canvasColor: Color.fromRGBO(255, 254, 229, 1),
         fontFamily: 'Raleway',
         textTheme: ThemeData.light().textTheme.copyWith(
-            bodyText1: TextStyle(
-              color: Color.fromRGBO(20, 51, 51, 1),
+              bodyText1: TextStyle(
+                color: Color.fromRGBO(20, 51, 51, 1),
+              ),
+              bodyText2: TextStyle(
+                color: Color.fromRGBO(20, 51, 51, 1),
+              ),
+              headline6: TextStyle(
+                fontSize: 20,
+                fontFamily: 'RobotoCondensed',
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            bodyText2: TextStyle(
-              color: Color.fromRGBO(20, 51, 51, 1),
-            ),
-            headline6: TextStyle(
-              fontSize: 20,
-              fontFamily: 'RobotoCondensed',
-              fontWeight: FontWeight.bold,
-            )),
       ),
       // home: CategoriesScreen(),
       initialRoute: '/', // default is '/'
@@ -97,7 +100,8 @@ class _MyAppState extends State<MyApp> {
         '/': (ctx) => TabsScreen(_favoriteMeals),
         CategoryMealsScreen.routeName: (ctx) =>
             CategoryMealsScreen(_availableMeals),
-        MealDetailScreen.routeName: (ctx) => MealDetailScreen(_toggleFavorite, _isMealFavorite),
+        MealDetailScreen.routeName: (ctx) =>
+            MealDetailScreen(_toggleFavorite, _isMealFavorite),
         FiltersScreen.routeName: (ctx) => FiltersScreen(_filters, _setFilters),
       },
       onGenerateRoute: (settings) {
