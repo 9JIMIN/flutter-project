@@ -127,6 +127,33 @@ provider를 통한 상태관리.
 
 ## 5. Great Place app
 
+### 5-1. Screen shot
+
+<img src='./images/great-1.png' width=1000>
+
+
+
+### 5-3. Description
+
+- 메인화면에 place리스트가 있다. 
+- 새로 만들기 화면에서는 제목, 사진, 장소를 받는다. 
+  - 장소는 구글 api를 이용
+- 만들어진 리스트를 클릭하면 해당 스크린을 볼 수 있고, 지도도 볼 수 있다. 
+- sqlite를 통해 로컬환경에 정보를 저장하였다.
+
+
+
+<img src='./images/great-2.png'>
+
+
+
+### 5-3. Learn
+
+디바이스 기능을 이용하는 방법
+
+- 카메라, 위치정보를 해당 플러그인을 받아서 사용.
+- sqlite로 로컬 환경에 저장해서 상태유지
+
 
 
 ## 6. Chat app

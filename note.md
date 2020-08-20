@@ -249,90 +249,117 @@ element tree는 UI의 논리적인 구조이다.
 
 ## 3.  shop app
 
-Provider
 
-- ChangeNotifier
-  listeners에게 change notification을 제공하는 클래스. 플러터에 내장되어 있기에 따로 import가 필요없다. 
-  ChnageNotifier 를 확장하여 클래스를 만들면, 그 클래스의 변화를 구독할 수 있다. (상태관찰이 가능하다.)
-  예를들어, ChangeNotifier를 확장하여 클래스를 만들고, 거기에 **notifiyListener()**를 포함한 메서드를 정의한다. 
-  그러면, 외부에서 해당 모델을 listening하는 위젯들은 notifyListener()가 실행될때, rebuild가 된다.
 
-- ChangeNotifierProvider
-  ChangeNotifier의 인스턴스를 제공하는 위젯.
-  provider패키지가 필요하다. 
-  여러 클래스를 provide할때는 Multiprovier를 쓴다.
-  해당 위젯의 하위 위젯에서는 ChangeNotifier를 확장한 클래스(모델)에 접근할 수 있다.  
+### Provider
 
-- Consumer
-  Consumer<클래스명> 위젯은 해당 클래스에 접근을 할 수 있게 해준다. 타입(클래스 명)을 반드시 적어야한다. 
-  컨슈머 위젯에서 요구되는 인자는 builder함수이다. 
-  builder함수는 ChangeNotifier가 변할때(즉, notifyListener가 실행될때) 실행된다.
-  builder함수는 3개의 인자를 받는다. 
-  첫번째는 모든 build메서드에서 제공하는 context
-  두번째는 ChangeNotifier의 인스턴스(이걸 얻기위함이 목적임.)
-  세번째는 chlid, optimization을 위해 존재한다. 예를 들어 Consumer위젯 하위에 큰 하위 위젯트리가 있고, 모델의 변화와 상관이 없는 경우에는 따로 child인자를 정의하고, 그걸 builder 함수의 인자로 넣어서 이미 만들어진 위젯을 넣음으로써 rebuild가 안되게 할 수도 있다.
+- **1. ChangeNotifier**
+
+> A class that can be extended or mixed in that provides a change notification API using [VoidCallback](https://api.flutter.dev/flutter/dart-ui/VoidCallback.html) for notifications.
+
+플러터에 내장되어 있기에 따로 import가 필요없다. 
+ChnageNotifier 를 확장하여 클래스를 만들면, 그 클래스의 변화를 구독할 수 있다. (상태관찰이 가능하다.)
+예를들어, ChangeNotifier를 확장하여 클래스를 만들고, 거기에 **notifiyListener()**를 포함한 메서드를 정의한다. 
+그러면, 외부에서 해당 모델을 listening하는 위젯들은 notifyListener()가 실행될때, rebuild가 된다.
+
+- **2. ChangeNotifierProvider**
+
+> Listens to a [ChangeNotifier](https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html), expose it to its descendants and rebuilds dependents whenever [ChangeNotifier.notifyListeners](https://api.flutter.dev/flutter/foundation/ChangeNotifier/notifyListeners.html) is called.
+
+ChangeNotifier의 인스턴스를 제공하는 위젯.
+provider패키지가 필요하다. 
+여러 클래스를 provide할때는 Multiprovier를 쓴다.
+해당 위젯의 하위 위젯에서는 ChangeNotifier를 확장한 클래스(모델)에 접근할 수 있다.  
+
+- **3. Consumer**
+
+> Obtains [Provider](https://pub.dev/documentation/provider/latest/provider/Provider-class.html) from its ancestors and passes its value to [builder](https://pub.dev/documentation/provider/latest/provider/Consumer/builder.html).
+> The [Consumer](https://pub.dev/documentation/provider/latest/provider/Consumer-class.html) widget doesn't do any fancy work. It just calls [Provider.of](https://pub.dev/documentation/provider/latest/provider/Provider/of.html) in a new widget, and delegates its `build` implementation to [builder](https://pub.dev/documentation/provider/latest/provider/Consumer/builder.html).
+> [builder](https://pub.dev/documentation/provider/latest/provider/Consumer/builder.html) must not be null and may be called multiple times (such as when the provided value change).
+
+Consumer<클래스명> 위젯은 해당 클래스에 접근을 할 수 있게 해준다. 타입(클래스 명)을 반드시 적어야한다. 
+컨슈머 위젯에서 요구되는 인자는 builder함수이다. 
+builder함수는 ChangeNotifier가 변할때(즉, notifyListener가 실행될때) 실행된다.
+builder함수는 3개의 인자를 받는다. 
+첫번째는 모든 build메서드에서 제공하는 context
+두번째는 ChangeNotifier의 인스턴스(이걸 얻기위함이 목적임.)
+세번째는 chlid, optimization을 위해 존재한다. 예를 들어 Consumer위젯 하위에 큰 하위 위젯트리가 있고, 모델의 변화와 상관이 없는 경우에는 따로 child인자를 정의하고, 그걸 builder 함수의 인자로 넣어서 이미 만들어진 위젯을 넣음으로써 rebuild가 안되게 할 수도 있다.
+
+```dart
+return Consumer<CartModel>(
+  builder: (context, cart, child) => Stack(
+        children: [
+          // Use SomeExpensiveWidget here, without rebuilding every time.
+          child,
+          Text("Total price: ${cart.totalPrice}"),
+        ],
+      ),
+  // Build the expensive widget here.
+  child: SomeExpensiveWidget(),
+);
+```
+
+ 그래서 가능한 Consumer를 위젯 깊숙이에 위치시키는 것이 좋다. 
+
+- **Provider.of**
+  Consumer는 UI변화를 위해서 모델의 데이터가 필요할때 쓰인다. 
+  Provider.of는 UI변화랑은 상관없지만, 그래도 데이터가 필요할때 쓰인다.
+  예를들어 예를들어서 상품을 담는 카트모델이 있고, 카트를 비우고 싶을때는 해당 모델의 특정 메서드만 쓰면 된다. 
+  Consumer를 통해서도 모델인스턴스를 제공받아 메서드를 실행할 수 있지만, 불필요한 rebuild가 수반된다. 
+  build는 다시할 필요없지만, 모델을 써야할때. Provider.of를 아래와 같이 쓸 수 있다. 
 
   ```dart
-  return Consumer<CartModel>(
-    builder: (context, cart, child) => Stack(
-          children: [
-            // Use SomeExpensiveWidget here, without rebuilding every time.
-            child,
-            Text("Total price: ${cart.totalPrice}"),
-          ],
-        ),
-    // Build the expensive widget here.
-    child: SomeExpensiveWidget(),
+  Provider.of<CartModel>(context, listen: false).add(item);
+  ```
+
+  notifyListeners가 실행되어도, 위젯이 rebuild되지 않는다.  
+
+
+
+- **4. ChangeNotifierProxyProvider**
+
+> A [ChangeNotifierProvider](https://pub.dev/documentation/provider/latest/provider/ChangeNotifierProvider-class.html) that builds and synchronizes a [ChangeNotifier](https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html) with external values.
+
+- [docs](https://pub.dev/documentation/provider/latest/provider/ChangeNotifierProxyProvider-class.html)
+  외부값에 의존하는 ChangeNotifier를 provide할때 쓰인다.
+  예를 들어 아래와 같은 Provider를 보자.
+
+  ```dart
+  ChangeNotifierProvider(
+    create: (context) {
+      return MyChangeNotifier(
+        myModel: Provider.of<MyModel>(context, listen: false),
+      );
+    },
+    child: ...
+  )
+  ```
+
+  MyChangeNotifier 인스턴스를 만드는데, MyModel이라는 다른 provider가 쓰인다. 
+  This works as long as `MyModel` never changes. But if it somehow updates, then our [ChangeNotifier](https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html) will never update accordingly.
+  To solve this issue, we could instead use this class, like so:
+
+  ```dart
+  ChangeNotifierProxyProvider<MyModel, MyChangeNotifier>( // ChangeNotifierProxyProvider(참고할 프로바이더, 만들 프로바이더)
+      // create, update, child
+      create: (_) => MyChangeNotifier(), // 만들 프로바이더.
+      update: (_, myModel, myNotifier) => myNotifier // (context, 참고할 프로바이더, 만들 프로바이더의 이전 인스턴스) => 새로운 인스턴스
+      ..update(myModel),
+      child: ...
   );
   ```
 
-   그래서 가능한 Consumer를 위젯 깊숙이에 위치시키는 것이 좋다. 
+  MyModel이 업데이트 될때, MyChangeNotifier도 업데이트가 적용이 된다. 
 
-  - Provider.of
-    Consumer는 UI변화를 위해서 모델의 데이터가 필요할때 쓰인다. 
-    Provider.of는 UI변화랑은 상관없지만, 그래도 데이터가 필요할때 쓰인다.
-    예를들어 예를들어서 상품을 담는 카트모델이 있고, 카트를 비우고 싶을때는 해당 모델의 특정 메서드만 쓰면 된다. 
-    Consumer를 통해서도 모델인스턴스를 제공받아 메서드를 실행할 수 있지만, 불필요한 rebuild가 수반된다. 
-    build는 다시할 필요없지만, 모델을 써야할때. Provider.of를 아래와 같이 쓸 수 있다. 
+  가능한 **ProxyProvider**를 쓰는 것이 좋다. 
 
-    ```dart
-    Provider.of<CartModel>(context, listen: false).add(item);
-    ```
+> A provider that builds a value based on other providers.
+> The exposed value is built through either `create` or `update`, then passed to [InheritedProvider](https://pub.dev/documentation/provider/latest/provider/InheritedProvider-class.html). 
 
-    notifyListeners가 실행되어도, 위젯이 rebuild되지 않는다.  
 
-  - ChangeNotifierProxyProvider
-    [docs](https://pub.dev/documentation/provider/latest/provider/ChangeNotifierProxyProvider-class.html)
-    외부값에 의존하는 ChangeNotifier를 provide할때 쓰인다.
-    예를 들어 아래와 같은 Provider를 보자.
 
-    ```dart
-    ChangeNotifierProvider(
-      create: (context) {
-        return MyChangeNotifier(
-          myModel: Provider.of<MyModel>(context, listen: false),
-        );
-      },
-      child: ...
-    )
-    ```
+### 생명주기
 
-    MyChangeNotifier 인스턴스를 만드는데, MyModel이라는 다른 provider가 쓰인다. 
-    This works as long as `MyModel` never changes. But if it somehow updates, then our [ChangeNotifier](https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html) will never update accordingly.
-    To solve this issue, we could instead use this class, like so:
-
-    ```dart
-    ChangeNotifierProxyProvider<MyModel, MyChangeNotifier>(
-      create: (_) => MyChangeNotifier(),
-      update: (_, myModel, myNotifier) => myNotifier
-        ..update(myModel),
-      child: ...
-    );
-    ```
-
-    MyModel이 업데이트 될때, MyChangeNotifier도 업데이트가 적용이 된다. 
-
-생명주기
 [블로그 설명](https://jaceshim.github.io/2019/01/28/flutter-study-stateful-widget-lifecycle/)
 [미디엄 설명](https://medium.com/flutter-community/widget-state-buildcontext-inheritedwidget-898d671b7956)
 
@@ -367,3 +394,42 @@ the framework would call this method to notify this object about the change.
 
 
 itemBuilder는 스크롤해서 보이면 생성된다. 
+
+***
+
+### FutureBuilder
+
+[문서](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)
+
+```dart
+FutureBuilder(
+    // future, builder 두 개가 필요함.
+    future: http.get('http://somedata.com'), // Future를 리턴하는(시간이 걸리는) 작업
+    builder: (context, snapshot) { // snapshot은 작업현재상태를 뜻함.
+        snapshot.connectionState == ConnectionState.waiting
+            ? ForwaitingScreen() // 작업이 끝나지 않았을때 보여줄 화면.(주로 로딩 화면.)
+            : ResultScreen() // 최종 리턴 화면.
+    }
+
+)
+```
+
+***
+
+### key
+
+[블로그 설명](https://nsinc.tistory.com/214)
+
+위젯은 생성자로 부터 Key를 받을 수 있다. 
+위젯이 위젯트리에서 위치를 변경하더라도 Stateful위젯은 타입만 확인하므로, Element트리는 달리진 것을 인식하지 못할 수 있다. 
+따라서 위젯을 구분해주기 위해 Key가 쓰인다. 
+
+A [Key] is an identifier for [Widget]s, [Element]s and [SemanticsNode]s.
+A new widget will only be used to update an existing element if its key is the same as the key of the current widget associated with the element.
+
+***
+
+### pushNamed, pushRelacementNamed
+
+pushNamed는 현재창 위에 생성함. Navigator.pop()로 뒤로 가기 가능. 앱바에 자동으로 뒤로가기 버튼이 생김.
+pushReplacementNamed는 현재창을 dispose하고 생성.
