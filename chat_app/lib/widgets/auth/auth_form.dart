@@ -77,7 +77,8 @@ class _AuthFormState extends State<AuthForm> {
                   if (!_isLogin) UserImagePicker(_pickedImage),
                   TextFormField(
                     key: ValueKey(
-                        'email'), // 키가 없으면, login-signup전환시 값을 구분못해서, 다른필드에 값이 들어가게 된다.
+                      'email',
+                    ), // 키가 없으면, login-signup전환시 값을 구분못해서, 다른필드에 값이 들어가게 된다.
                     keyboardType: TextInputType.emailAddress,
                     autocorrect: false,
                     textCapitalization: TextCapitalization.none,

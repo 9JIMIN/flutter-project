@@ -157,3 +157,24 @@ provider를 통한 상태관리.
 
 
 ## 6. Chat app
+
+### 6-1. Screen shot
+
+<img src='./images/chat-2.png'>
+
+
+
+### 6-2. Description
+
+- `firebase - authentication`로 인증- 로그인
+- `firebase - storage`에 프사 저장
+- `firebase - cloud firestore + cloud messaging` 기능으로 채팅기능 & 푸시알림
+
+<img src='./images/chat-1.jpg'>
+
+
+
+### 6-3. Learn
+
+- firebase의 다양한 기능들, 
+- 푸시알림. 신기해~

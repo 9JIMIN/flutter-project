@@ -13,10 +13,6 @@ class Auth with ChangeNotifier {
   String _userId;
   Timer _authTimer;
 
-  bool get isAuth {
-    return token != null;
-  }
-
   String get token {
     if (_expiryDate != null &&
         _expiryDate.isAfter(DateTime.now()) &&
@@ -24,6 +20,10 @@ class Auth with ChangeNotifier {
       return _token;
     }
     return null;
+  }
+
+  bool get isAuth {
+    return token != null;
   }
 
   String get userId {

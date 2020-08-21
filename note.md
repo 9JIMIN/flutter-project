@@ -1,6 +1,4 @@
-# 노트
-
-## 1. 개념
+### 플러터 개념
 
 **Flutter** = SDK+widget library, 툴셋(SDK)와 위젯모음을 제공하는 API이다. 다트 위에서 돌아가는 프레임워크이다.
 flutter SDK의 툴킷은 다트로 작성한 코드를 iOS, android에 맞게 컴파일을 해준다.
@@ -14,6 +12,10 @@ The widget building recursion bottoms out in `RenderObjectWidgets`, which are wi
 
 다트 언어는 UI에 특화된 프로그래밍언어이다. 
 예를 들어 async-await, collection if, spread operator같은 기능이 있다.
+그러니까 상태에 따라 서로 다른 응답을 보여줘야하는 그런 기능을 편리하게 만들 수 있는 문법이 많다. 
+
+> dart는 아니지만, flutter에 보면 FutureBuilder, StreamBuilder 같은 기능이 있다. 
+> dart에도 if, 삼항연산자(? :)로 상태에 따라 응답을 구분하는 등의 기능이 있다. 
 
 UI vs UX
 UI is made up of all the elements that enable someone to interact with a product or service. 
@@ -139,7 +141,7 @@ One of the common uses is passing it to the `of` method when using an [Inherited
 Calling `Something.of(context)`, for example, returns the `Something` relative to the closest widget in the tree that can provide you that `Something`.
 You can read more about `BuildContext` [here in the docs](https://docs.flutter.io/flutter/widgets/BuildContext-class.html).
 
-## 1. Quiz app
+### 기본
 
 ```dart
 import 'package:flutter/material.dart';
@@ -194,8 +196,6 @@ stful위젯에서는 state에 상태유지를 위한 변수를 저장한다.
 이때, 변수를 조작할 함수도 같이 정의하게 된다. 
 그리고 그 함수들은 주로 setState를 가지고 있어 조작된 변수로 다시 빌드를 한다. 
 
-## 2. Personal Expenses app
-
 ### build & context
 
 - [인사이드플러터-sublinear widget building](https://flutter.dev/docs/resources/inside-flutter#sublinear-widget-building)
@@ -244,10 +244,6 @@ element tree는 UI의 논리적인 구조이다.
   - didUpdateWidget은 부모의 값을 변했을때 
   
   context는 위젯트리에서의 위치 관계에 대해서 나타냄.
-
-
-
-## 3.  shop app
 
 
 
@@ -358,7 +354,7 @@ return Consumer<CartModel>(
 
 
 
-### 생명주기
+### Life cycle
 
 [블로그 설명](https://jaceshim.github.io/2019/01/28/flutter-study-stateful-widget-lifecycle/)
 [미디엄 설명](https://medium.com/flutter-community/widget-state-buildcontext-inheritedwidget-898d671b7956)
@@ -397,11 +393,19 @@ itemBuilder는 스크롤해서 보이면 생성된다.
 
 ***
 
-### FutureBuilder
+### FutureBuilder vs Streambuilder
 
-[문서](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)
+- FutureBuilder = [문서](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)
+  - `Future`는 하나의 응답만을 받는다. (http응답과 같은 비동기 처리에 쓰인다.)
+  - 따라서 Future에서 들을 수 있는 것은 **상태**이다. `진행중-성공-오류` 와 같은 것들. 그게 전부.
+- StreamBuilder = [문서](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html)
+  - `Stream`은 Future와 달리, 하나의 응답이 아니라 시간에 따라 변하는 이벤트를 받는다. 
+  - 그래서 Future처럼 한번 하고 마는 것이 아니라, 계속 듣고 있음
+  - `클릭 - 웹소켓`과 같은 것들이 있다.
+-  [질문글]([https://www.it-swarm.dev/ko/dart/flutter-streambuilder-%EB%B0%8F-futurebuilder/838047623/](https://www.it-swarm.dev/ko/dart/flutter-streambuilder-및-futurebuilder/838047623/))
 
 ```dart
+// FutureBuilder
 FutureBuilder(
     // future, builder 두 개가 필요함.
     future: http.get('http://somedata.com'), // Future를 리턴하는(시간이 걸리는) 작업
@@ -411,6 +415,15 @@ FutureBuilder(
             : ResultScreen() // 최종 리턴 화면.
     }
 
+)
+```
+
+```dart
+// StreamBuilder
+StreamBuilder(
+    // stream, builder 두 개가 필요함. 
+	stream: // stream을 리턴하는(그때그때 값이 바뀌는 작업)
+    builder: (context, snapshot) {} // snapshot으로 현재상태를 받아서 서로다른 응답을 보낼 수 있음. 
 )
 ```
 
@@ -433,3 +446,36 @@ A new widget will only be used to update an existing element if its key is the s
 
 pushNamed는 현재창 위에 생성함. Navigator.pop()로 뒤로 가기 가능. 앱바에 자동으로 뒤로가기 버튼이 생김.
 pushReplacementNamed는 현재창을 dispose하고 생성.
+
+
+
+***
+
+### DropDownButton
+
+```dart
+DropdownButton(
+    // 보통, 앱바 오른쪽에 아이콘이 표시되고, 누르면 드롭다운 메뉴가 나옴.
+    // 인자로는 icon, items, onChanged 가 있다.
+    
+	icon: Icon(Icons.more_vert, color: Theme.of(context).primaryIconTheme.color),
+	items: [ 
+		DropdownMenuItem(
+			value: 'case_a',
+			child: // widget
+		),
+        DropdownMenuItem(
+			value: 'case_b',
+			child: // widget
+		),
+	],
+    onChanged: (val) { // items에 설정한 value가 들어온다.
+        if(val == 'case_a'){
+            // ... after case_a click
+        } else {
+            // ... case b click
+        }
+    }
+)
+```
+
