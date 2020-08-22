@@ -27,7 +27,8 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: StreamBuilder(
-        stream: FirebaseAuth.instance.onAuthStateChanged,
+        stream: FirebaseAuth.instance.onAuthStateChanged, 
+        // 로그인: 가입된 User클래스를 리턴, 로그아웃: null 리턴 
         builder: (ctx, userSnapshot) {
           if (userSnapshot.connectionState == ConnectionState.waiting) {
             return SplashScreen();
