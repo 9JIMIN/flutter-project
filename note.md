@@ -321,6 +321,20 @@ pushReplacementNamed는 현재창을 dispose하고 생성.
 
 
 
+### initState
+
+initState안에서는 `.of`를 쓸 수 없다. 위젯이 막- 만들어져서 그런듯.
+didChangeDependencies 에서는 쓸 수 있다.
+
+하지만, `didChangeDependencies` 는 여러번 호출이 되어서, 한번만 호출을 해야할 상황에서는 맞지 않다.
+그래서 확인을 위한 변수를 만들어줌.
+initState에서 Duration.zero보다 이게 더 안전함.
+
+[스택오버플로 답변](https://stackoverflow.com/questions/49457717/flutter-get-context-in-initstate-method) 여기서는 initState를 쓰라고 함. 하지만 이건 좀 별로임.
+[여기 답변]([https://www.it-swarm.dev/ko/flutter/initstate%EC%97%90%EC%84%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%A5%BC-%ED%95%9C-%EB%B2%88-%EC%B4%88%EA%B8%B0%ED%99%94%ED%95%98%EA%B3%A0-%EB%8D%B0%EC%9D%B4%ED%84%B0%EA%B0%80-%EC%A4%80%EB%B9%84%EB%90%98%EB%A9%B4-setstate%EB%A5%BC-%ED%98%B8%EC%B6%9C%ED%95%98%EC%97%AC-%EC%98%88%EC%99%B8%EA%B0%80-%EB%B0%9C%EC%83%9D%ED%95%A9%EB%8B%88%EB%8B%A4/806995871/](https://www.it-swarm.dev/ko/flutter/initstate에서-데이터를-한-번-초기화하고-데이터가-준비되면-setstate를-호출하여-예외가-발생합니다/806995871/)) 에 나온 것 처럼 그냥 didChangeDependencies 를 쓰는게 좋다!
+
+
+
 # 3. 위젯
 
 ### Scaffold
@@ -360,6 +374,23 @@ class MyApp extends StatelessWidget {
 
 ### Provider
 
+공식 문서는 언제나...
+[provider 문서](https://pub.dev/packages/provider)
+[state management 문서](https://flutter.dev/docs/development/data-and-backend/state-mgmt/simple)
+
+```dart
+class SomeThing with ChangeNotifier {
+    List<Some> _items = [];
+}
+```
+
+그림설명 - 미디엄
+
+- [1편](https://medium.com/flutter-community/understanding-provider-in-diagrams-part-1-providing-values-4379aa1e7fd5)
+
+- [2편](https://medium.com/flutter-community/understanding-provider-in-diagrams-part-2-basic-providers-1a80fb74d4e7)
+- [3편](https://medium.com/flutter-community/understanding-provider-in-diagrams-part-3-architecture-a145e4fbbde1)
+
 - **1. ChangeNotifier**
 
 > A class that can be extended or mixed in that provides a change notification API using [VoidCallback](https://api.flutter.dev/flutter/dart-ui/VoidCallback.html) for notifications.
@@ -378,7 +409,7 @@ provider패키지가 필요하다.
 여러 클래스를 provide할때는 Multiprovier를 쓴다.
 해당 위젯의 하위 위젯에서는 ChangeNotifier를 확장한 클래스(모델)에 접근할 수 있다.  
 
-- **3. Consumer**
+- **3. Consumer** >> 변화된 걸 받아서 디스플레이 하기 위함
 
 > Obtains [Provider](https://pub.dev/documentation/provider/latest/provider/Provider-class.html) from its ancestors and passes its value to [builder](https://pub.dev/documentation/provider/latest/provider/Consumer/builder.html).
 > The [Consumer](https://pub.dev/documentation/provider/latest/provider/Consumer-class.html) widget doesn't do any fancy work. It just calls [Provider.of](https://pub.dev/documentation/provider/latest/provider/Provider/of.html) in a new widget, and delegates its `build` implementation to [builder](https://pub.dev/documentation/provider/latest/provider/Consumer/builder.html).
@@ -408,7 +439,7 @@ return Consumer<CartModel>(
 
  그래서 가능한 Consumer를 위젯 깊숙이에 위치시키는 것이 좋다. 
 
-- **4. Provider.of**
+- **4. Provider.of** >> 보여줄 필요는 없을 때. listen: false를 위해서 씀. 
   Consumer는 UI변화를 위해서 모델의 데이터가 필요할때 쓰인다. 
   Provider.of는 UI변화랑은 상관없지만, 그래도 데이터가 필요할때 쓰인다.
   예를들어 예를들어서 상품을 담는 카트모델이 있고, 카트를 비우고 싶을때는 해당 모델의 특정 메서드만 쓰면 된다. 
@@ -460,6 +491,11 @@ return Consumer<CartModel>(
 
 > A provider that builds a value based on other providers.
 > The exposed value is built through either `create` or `update`, then passed to [InheritedProvider](https://pub.dev/documentation/provider/latest/provider/InheritedProvider-class.html). 
+
+- 7. **ChangeNotifierProvider.value**
+
+  이미 공급이 된 Provider의 값을 쓸때, 이용함. 
+  `value: ~`에 들어간 인자가 Provider로 Child에서 쓰일 수 있음.
 
 ***
 
@@ -527,7 +563,57 @@ DropdownButton(
 )
 ```
 
+***
 
+### sqflite
+
+> [공식문서](https://flutter-ko.dev/docs/cookbook/persistence/sqlite)
+>
+> 인간적으로 코드북 하루 하나씩 기능 익히자.. [여기](https://flutter-ko.dev/docs/cookbook)
+
+1. `sqflite`, `path` 추가하기
+
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  sqflite:
+  path:
+```
+
+2. 데이터베이스 열기
+
+```dart
+final Future<Database> database = openDatabase(join(await getDatabasesPath(), 'dog_db.db'));
+```
+
+3. 모델 정의
+
+```dart
+class Dog{
+    final int id;
+    final String name;
+    final int age;
+    
+    Dog({this.id, this.name, this.age});
+}
+```
+
+4. 테이블 생성
+
+```dart
+final Future<Database> database = openDatabase(
+    join(await getDatabasesPath(), 'dog_db'),
+    onCreate: (db, version) { // 처음 생성될때 실행
+        return db.execute(
+        	"CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, age INTEGER)"
+        );
+    },
+	version: 1, // DB업그레이드, 다운그레이드를 위함.
+);
+```
+
+기본적인 CRUD 기능은 [여기참고](https://github.com/tekartik/sqflite/blob/master/sqflite/doc/sql.md#basic-usage)
 
 # 4. Firebase
 

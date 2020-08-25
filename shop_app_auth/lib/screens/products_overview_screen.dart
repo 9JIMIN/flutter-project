@@ -26,6 +26,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   @override
   void initState() {
     // Provider.of<Products>(context).fetchAndSetProducts(); // WON'T WORK!
+    // initState() 에서는 위젯이 준비가 안되서, .of 를 쓸 수가 없다.
+    // 아래 방법보다는 안전하게 didChangeDependencies를 쓰는게 좋음.
     // Future.delayed(Duration.zero).then((_) {
     //   Provider.of<Products>(context).fetchAndSetProducts();
     // });

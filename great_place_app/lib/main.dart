@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Colors.indigo,
           accentColor: Colors.amber,
+          errorColor: Colors.red,
         ),
         home: PlacesListScreen(),
         routes: {

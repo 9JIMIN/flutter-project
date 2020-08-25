@@ -29,7 +29,7 @@ class ProductItem extends StatelessWidget {
             );
           },
           child: Hero(
-            tag: product.id,
+            tag: product.id, // 연결될 route의 인자값
             child: FadeInImage(
               placeholder: AssetImage('assets/images/product-placeholder.png'),
               image: NetworkImage(product.imageUrl),

@@ -31,8 +31,8 @@ class GreatPlaces with ChangeNotifier {
     );
     final newPlace = Place(
       id: DateTime.now().toString(),
-      image: pickedImage,
       title: pickedTitle,
+      image: pickedImage,
       location: updatedLocation,
     );
     _items.add(newPlace);
@@ -50,16 +50,24 @@ class GreatPlaces with ChangeNotifier {
   Future<void> fetchAndSetPlaces() async {
     final dataList = await DBHelper.getData('places');
     _items = dataList
-        .map((item) => Place(
-              id: item['id'],
-              title: item['title'],
-              image: File(item['image']),
-              location: PlaceLocation(
-                  latitude: item['loc_lat'],
-                  longtitude: item['loc_lng'],
-                  address: item['address']),
-            ))
+        .map(
+          (item) => Place(
+            id: item['id'],
+            title: item['title'],
+            image: File(item['image']),
+            location: PlaceLocation(
+                latitude: item['loc_lat'],
+                longtitude: item['loc_lng'],
+                address: item['address']),
+          ),
+        )
         .toList();
     notifyListeners();
+  }
+
+  Future<void> deletePlace(String id) async {
+    _items.removeWhere((element) => element.id == id);
+    notifyListeners();
+    DBHelper.delete('places', id);
   }
 }

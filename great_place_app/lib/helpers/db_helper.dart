@@ -1,11 +1,10 @@
-import 'package:sqflite/sqflite.dart' as sql;
-import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as path;
 
 class DBHelper {
   static Future<Database> database() async {
-    final dbPath = await sql.getDatabasesPath();
-    return sql.openDatabase(path.join(dbPath, 'places.db'),
+    final dbPath = await getDatabasesPath();
+    return openDatabase(path.join(dbPath, 'places.db'),
         onCreate: (db, version) {
       return db.execute(
           'CREATE TABLE places(id TEXT PRIMARY KEY, title TEXT, image TEXT, loc_lat REAL, loc_lng REAL, address TEXT)');
@@ -17,12 +16,17 @@ class DBHelper {
     db.insert(
       table,
       data,
-      conflictAlgorithm: sql.ConflictAlgorithm.replace,
+      conflictAlgorithm: ConflictAlgorithm.replace,
     ); // id가 겹칠때 replace한다는 뜻
   }
 
   static Future<List<Map<String, dynamic>>> getData(String table) async {
     final db = await DBHelper.database();
     return db.query(table);
+  }
+
+  static Future<void> delete(String table, String id) async{
+    final db = await DBHelper.database();
+    db.delete(table, where: 'id=?', whereArgs: [id]);
   }
 }

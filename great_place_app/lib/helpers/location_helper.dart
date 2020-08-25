@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import '../secret.dart';
 
-const GOOGLE_API_KEY = 'AIzaSyCyKCfozX9AKPnKtRPtcCx2IBZTdi1V_J0';
+const GOOGLE_API_KEY = KEY;
 
 class LocationHelper {
   static String generateLocationPreviewImage({double latitude, double longitude,}) { // 뒤에 알파벳 바꾸면 마커 알파벳 바뀜.

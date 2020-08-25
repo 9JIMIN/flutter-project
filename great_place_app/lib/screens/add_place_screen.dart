@@ -25,7 +25,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
     _pickedImage = pickedImage;
   }
 
-  void _selectPlace(double lat, double lng) {
+  void _selectPlace(double lat, double lng) { // latitude(위도) 가로, longtitude(경도) 세로
     _pickedLocation = PlaceLocation(latitude: lat, longtitude: lng);
   }
 

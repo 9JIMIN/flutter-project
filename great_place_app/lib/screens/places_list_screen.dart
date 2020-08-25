@@ -5,7 +5,16 @@ import '../screens/add_place_screen.dart';
 import '../providers/great_places.dart';
 import './place_detail_screen.dart';
 
-class PlacesListScreen extends StatelessWidget {
+class PlacesListScreen extends StatefulWidget {
+  @override
+  _PlacesListScreenState createState() => _PlacesListScreenState();
+}
+
+class _PlacesListScreenState extends State<PlacesListScreen> {
+  void _deletePlace(String id) {
+    Provider.of<GreatPlaces>(context, listen: false).deletePlace(id);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +38,9 @@ class PlacesListScreen extends StatelessWidget {
                 child: CircularProgressIndicator(),
               )
             : Consumer<GreatPlaces>(
+                // 컨슈머를 여기에 지정을 해서 GreatPlace가 바뀌면 이 밑에 싹다 바뀜
                 child: Center(
+                  // 될 수 있으면 Consumer는 깊이 두는게 좋다.
                   child: const Text('Got no places yet, start adding some!'),
                 ),
                 // builder는 child를 받아서, 쓸 수 있다.
@@ -45,6 +56,11 @@ class PlacesListScreen extends StatelessWidget {
                           ),
                           title: Text(greatPlaces.items[i].title),
                           subtitle: Text(greatPlaces.items[i].location.address),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete),
+                            color: Theme.of(context).errorColor,
+                            onPressed: () => {_deletePlace(greatPlaces.items[i].id)},
+                          ),
                           onTap: () {
                             Navigator.of(context).pushNamed(
                               PlaceDetailScreen.routeName,

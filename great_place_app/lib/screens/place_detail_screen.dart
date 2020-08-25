@@ -45,12 +45,15 @@ class PlaceDetailScreen extends StatelessWidget {
             child: Text('View on Map'),
             textColor: Theme.of(context).primaryColor,
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
+              Navigator.of(context).push(
+                MaterialPageRoute(
                   fullscreenDialog: true,
                   builder: (ctx) => MapScreen(
-                        initialLocation: selectedPlace.location,
-                        isSelecting: false,
-                      )));
+                    initialLocation: selectedPlace.location,
+                    isSelecting: false,
+                  ),
+                ),
+              );
             },
           )
         ],
