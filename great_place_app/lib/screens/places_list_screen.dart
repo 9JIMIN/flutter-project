@@ -5,18 +5,13 @@ import '../screens/add_place_screen.dart';
 import '../providers/great_places.dart';
 import './place_detail_screen.dart';
 
-class PlacesListScreen extends StatefulWidget {
-  @override
-  _PlacesListScreenState createState() => _PlacesListScreenState();
-}
-
-class _PlacesListScreenState extends State<PlacesListScreen> {
-  void _deletePlace(String id) {
-    Provider.of<GreatPlaces>(context, listen: false).deletePlace(id);
-  }
-
+class PlacesListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    void _deletePlace(String id) {
+      Provider.of<GreatPlaces>(context, listen: false).deletePlace(id);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Your Places'),
@@ -30,6 +25,7 @@ class _PlacesListScreenState extends State<PlacesListScreen> {
         ],
       ),
       body: FutureBuilder(
+        // 이걸 안해주면, 처음 앱열때, ChangeNotifier의 items가 텅비어있어서 db내용을 받아올 수 없음.
         future: Provider.of<GreatPlaces>(context, listen: false)
             .fetchAndSetPlaces(),
         builder: (ctx, snapshot) => snapshot.connectionState ==
@@ -59,7 +55,8 @@ class _PlacesListScreenState extends State<PlacesListScreen> {
                           trailing: IconButton(
                             icon: Icon(Icons.delete),
                             color: Theme.of(context).errorColor,
-                            onPressed: () => {_deletePlace(greatPlaces.items[i].id)},
+                            onPressed: () =>
+                                {_deletePlace(greatPlaces.items[i].id)},
                           ),
                           onTap: () {
                             Navigator.of(context).pushNamed(

@@ -50,7 +50,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       children: <Widget>[
                         Icon(Icons.exit_to_app),
                         SizedBox(width: 8),
-                        Text('Logout')
+                        Text('Logout'),
                       ],
                     ),
                   ),
