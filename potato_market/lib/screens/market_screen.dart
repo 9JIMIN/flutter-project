@@ -21,9 +21,9 @@ class _MarketScreenState extends State<MarketScreen> {
         Navigator.of(context).pushReplacementNamed('/');
       } else if (index == 1) {
         Navigator.of(context).pushNamed(EditScreen.routeName);
-      }else if(index == 2){
+      } else if (index == 2) {
         Navigator.of(context).pushNamed(ChatScreen.routeName);
-      } else if(index == 3){
+      } else if (index == 3) {
         Navigator.of(context).pushNamed(ProfileScreen.routeName);
       }
     });
@@ -35,7 +35,10 @@ class _MarketScreenState extends State<MarketScreen> {
       appBar: AppBar(
         title: Text('감자마켓'),
         actions: [
-          IconButton(icon: Icon(Icons.search), onPressed: () {}),
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {},
+          ),
         ],
       ),
       body: FutureBuilder(

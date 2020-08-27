@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   cloud_firestore:
+  firebase_auth:
   firebase_core:
 
 
