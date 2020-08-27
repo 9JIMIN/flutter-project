@@ -57,18 +57,21 @@ class _AuthFormState extends State<AuthForm> {
                   children: [
                     if (!_isLogin)
                       TextFormField(
+                        key: ValueKey('nickname'),
                         decoration: InputDecoration(labelText: '닉네임'),
                         onSaved: (value) {
                           _username = value;
                         },
                       ),
                     TextFormField(
+                      key: ValueKey('email'),
                       decoration: InputDecoration(labelText: '메일주소'),
                       onSaved: (value) {
                         _userEmail = value;
                       },
                     ),
                     TextFormField(
+                      key: ValueKey('pass'),
                       decoration: InputDecoration(labelText: '패스워드'),
                       onSaved: (value) {
                         _password = value;
