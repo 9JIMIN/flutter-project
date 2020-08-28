@@ -5,6 +5,7 @@ import 'package:potato_market/screens/chat_screen.dart';
 import './edit_screen.dart';
 import './chat_screen.dart';
 import './profile_screen.dart';
+import '../widgets/product_item.dart';
 
 class MarketScreen extends StatefulWidget {
   static const routeName = '/';
@@ -42,7 +43,10 @@ class _MarketScreenState extends State<MarketScreen> {
         ],
       ),
       body: FutureBuilder(
-        future: FirebaseFirestore.instance.collection('test').get(),
+        future: FirebaseFirestore.instance
+            .collection('test')
+            .orderBy('createDate', descending: true)
+            .get(),
         builder: (ctx, snapshot) {
           if (snapshot.hasError) {
             return Text('someting went wrong');
@@ -52,9 +56,15 @@ class _MarketScreenState extends State<MarketScreen> {
             return ListView.builder(
               itemCount: data.length,
               itemBuilder: (ctx, index) {
-                return ListTile(
-                  title: Text(data[index].data()['title']),
-                  subtitle: Text(data[index].data()['price'].toString() + '원'),
+                final item = data[index].data();
+                return ProductItem(
+                  item['title'].toString(),
+                  item['price'].toString(),
+                  item['imageUrls'][0].toString(),
+                  item['seller'].toString(),
+                  item['createDate'],
+                  item['likeCount'].toString(),
+                  item['chatCount'].toString(),
                 );
               },
             );

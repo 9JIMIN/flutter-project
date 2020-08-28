@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -18,37 +16,52 @@ class EditScreen extends StatefulWidget {
 class _EditScreenState extends State<EditScreen> {
   final _titleController = TextEditingController();
   final _priceController = TextEditingController();
-  final _detailController = TextEditingController();
-  List<Asset> _images;
+  final _descriptionController = TextEditingController();
+  final _seller = FirebaseAuth.instance.currentUser.uid;
+  List<Asset> _images; // 스토리지에 올리는거
+  bool _isLoading = false;
 
   void _selectImage(List<Asset> pickedImages) {
     _images = pickedImages;
   }
 
   void _saveProduct() async {
+    setState(() {
+      _isLoading = true;
+    });
     if (_titleController.text.isEmpty ||
         _priceController.text.isEmpty ||
         _priceController.text.isEmpty) {
+      setState(() {
+        _isLoading = false;
+      });
       return;
     }
     // 사진 스토리지에 저장
-    final String id = FirebaseAuth.instance.currentUser.uid;
-    final StorageReference ref = FirebaseStorage.instance.ref().child(id);
+    final StorageReference ref = FirebaseStorage.instance.ref().child(_seller);
+    List<String> _urls = List<String>();
 
     await Future.forEach(_images, (image) async {
       ByteData byteData = await image.getByteData();
       List<int> imageData = byteData.buffer.asUint8List();
-      await ref
-          .child(DateTime.now().toString() + '.jpg')
-          .putData(imageData)
-          .onComplete;
+      final photoRef = ref.child(DateTime.now().toString() + '.jpg');
+      final finRef = await photoRef.putData(imageData).onComplete;
+
+      // 사진 URL받기
+      final String downloadUrl = await finRef.ref.getDownloadURL();
+      _urls.add(downloadUrl);
     });
 
     // 디비에 제품 올리기
     await FirebaseFirestore.instance.collection('test').add({
       'title': _titleController.text,
-      'price': _priceController.text,
-      'detail': _detailController.text,
+      'price': int.parse(_priceController.text),
+      'description': _descriptionController.text,
+      'imageUrls': _urls,
+      'seller': _seller,
+      'createDate': DateTime.now(),
+      'likeCount': 0,
+      'chatCount': 0,
     });
 
     Navigator.of(context).pop();
@@ -88,7 +101,7 @@ class _EditScreenState extends State<EditScreen> {
                     ),
                     TextField(
                       decoration: InputDecoration(labelText: '내용'),
-                      controller: _detailController,
+                      controller: _descriptionController,
                       maxLines: 3,
                     ),
                   ],
@@ -97,7 +110,7 @@ class _EditScreenState extends State<EditScreen> {
             ),
             RaisedButton.icon(
               icon: Icon(Icons.file_upload),
-              label: Text('게시'),
+              label: Text(_isLoading ? '게시중...' : '게시'),
               onPressed: _saveProduct,
             ),
             SizedBox(
