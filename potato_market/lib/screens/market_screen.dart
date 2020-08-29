@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:potato_market/screens/chat_screen.dart';
+import 'package:provider/provider.dart';
 
 import './edit_screen.dart';
 import './chat_screen.dart';
 import './profile_screen.dart';
 import '../widgets/product_item.dart';
+import '../helpers/db_helper.dart';
+import '../providers/products.dart';
 
 class MarketScreen extends StatefulWidget {
   static const routeName = '/';
@@ -43,30 +45,31 @@ class _MarketScreenState extends State<MarketScreen> {
         ],
       ),
       body: FutureBuilder(
-        future: FirebaseFirestore.instance
-            .collection('test')
-            .orderBy('createDate', descending: true)
-            .get(),
+        future: Provider.of<Products>(context, listen: false).fetchProducts(),
         builder: (ctx, snapshot) {
           if (snapshot.hasError) {
             return Text('someting went wrong');
           }
           if (snapshot.connectionState == ConnectionState.done) {
-            final List<DocumentSnapshot> data = snapshot.data.docs;
-            return ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (ctx, index) {
-                final item = data[index].data();
-                return ProductItem(
-                  item['title'].toString(),
-                  item['price'].toString(),
-                  item['imageUrls'][0].toString(),
-                  item['seller'].toString(),
-                  item['createDate'],
-                  item['likeCount'].toString(),
-                  item['chatCount'].toString(),
-                );
-              },
+            return Consumer<Products>(
+              child: Center(
+                child: Text('뭐가 없다.'),
+              ),
+              builder: (ctx, products, ch) => products.items.length == 0
+                  ? ch
+                  : ListView.builder(
+                      itemCount: products.items.length,
+                      itemBuilder: (ctx, i) {
+                        return ProductItem(
+                          products.items[i].title,
+                          products.items[i].price,
+                          products.items[i].imageUrls[0],
+                          products.items[i].createdAt,
+                          products.items[i].likeCount,
+                          products.items[i].chatCount,
+                        );
+                      },
+                    ),
             );
           }
           return Center(

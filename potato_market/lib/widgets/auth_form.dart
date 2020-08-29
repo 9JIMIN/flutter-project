@@ -39,7 +39,7 @@ class _AuthFormState extends State<AuthForm> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
+        SizedBox(
           height: 50,
           child: Text(
             '감자마켓',

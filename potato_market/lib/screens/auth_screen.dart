@@ -36,12 +36,17 @@ class _AuthScreenState extends State<AuthScreen> {
           password: password,
         );
 
+        // DB에도 유저정보 저장하기
         await FirebaseFirestore.instance
             .collection('users')
             .doc(authResult.user.uid)
             .set({
           'username': username,
           'email': email,
+        });
+
+        setState(() {
+          _isLoading = false;
         });
       }
     } catch (err) {
