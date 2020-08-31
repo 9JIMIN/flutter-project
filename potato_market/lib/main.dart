@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:potato_market/screens/auth_screen.dart';
+import 'package:potato_market/screens/detail/detail_column.dart';
 import 'package:provider/provider.dart';
 
-import './screens/edit_screen.dart';
-import './screens/chat_screen.dart';
-import './screens/profile_screen.dart';
-import './screens/market_screen.dart';
+// screens
+import './screens/auth/auth_scaffold.dart';
+import './screens/edit/edit_scaffold.dart';
+import './screens/chat/chat_listview.dart';
+import './screens/profile/profile_column.dart';
 import './screens/loading_screen.dart';
-import './screens/detail_screen.dart';
+import './screens/tab_screen.dart';
+
+// providers
 import './providers/products.dart';
 
 void main() async {
@@ -28,7 +31,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.brown,
           unselectedWidgetColor: Colors.black54,
-          errorColor: Colors.red,
+          errorColor: Colors.red[800],
           buttonTheme: ButtonTheme.of(context).copyWith(
               buttonColor: Colors.brown[800],
               textTheme: ButtonTextTheme.primary,
@@ -43,17 +46,16 @@ class MyApp extends StatelessWidget {
               return LoadingScreen();
             }
             if (snapshot.hasData) {
-              return MarketScreen();
+              return TabScreen();
             }
-            return AuthScreen();
+            return AuthScaffold();
           },
         ),
-        // MarketScreen(),
         routes: {
-          DetailScreen.routeName: (_) => DetailScreen(),
-          EditScreen.routeName: (_) => EditScreen(),
-          ChatScreen.routeName: (_) => ChatScreen(),
-          ProfileScreen.routeName: (_) => ProfileScreen(),
+          DetailColumn.routeName: (_) => DetailColumn(),
+          EditScaffold.routeName: (_) => EditScaffold(),
+          ChatListView.routeName: (_) => ChatListView(),
+          ProfileColumn.routeName: (_) => ProfileColumn(),
         },
       ),
     );

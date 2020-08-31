@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../widgets/auth_form.dart';
+import './auth_form.dart';
 
-class AuthScreen extends StatefulWidget {
+class AuthScaffold extends StatefulWidget {
   @override
-  _AuthScreenState createState() => _AuthScreenState();
+  _AuthScaffoldState createState() => _AuthScaffoldState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _AuthScaffoldState extends State<AuthScaffold> {
   final _auth = FirebaseAuth.instance;
   var _isLoading = false;
 

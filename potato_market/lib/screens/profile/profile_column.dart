@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ChatScreen extends StatelessWidget {
-  static const routeName = '/chat';
+class ProfileColumn extends StatelessWidget {
+  static const routeName = 'profile';
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: CircularProgressIndicator(),
+      child: Text('준비중...'),
     );
   }
 }
