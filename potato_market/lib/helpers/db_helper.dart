@@ -4,6 +4,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
+import '../models/product.dart';
+
 // fetch(상위 20개), more(아래 20개 추가),
 // CRUD
 
@@ -29,18 +31,30 @@ class DBHelper {
     });
   }
 
-  static Future<QuerySnapshot> getData(bool isUp, DateTime fromThis) async {
-    if (isUp == true) {
-      // 위로 업데이트
-      final QuerySnapshot query = await FirebaseFirestore.instance
-          .collection('products')
-          .orderBy('createdAt', descending: true)
-          .limit(20)
-          .get();
-      return query;
-    } else {
-      return null;
+  static Future<List<Product>> getData(DateTime time) async {
+    // 위로 업데이트
+    final QuerySnapshot query = await FirebaseFirestore.instance
+        .collection('products')
+        .orderBy('createdAt', descending: true)
+        .limit(20)
+        .get();
+
+    final List<Product> itemsList = [];
+    for (var docsnapshot in query.docs) {
+      final doc = docsnapshot.data();
+      final product = Product(
+        title: doc['title'],
+        price: doc['price'],
+        description: doc['description'],
+        createdAt: doc['createdAt'].toDate(), // 타임스템프를 Date로 바꿔줘야함.
+        imageUrls: doc['imageUrls'],
+        sellerId: doc['sellerId'],
+        likeCount: doc['likeCount'],
+        chatCount: doc['chatCount'],
+      );
+      itemsList.add(product);
     }
+    return itemsList;
   }
 
   static Future<List<String>> getImageUrls(List<Asset> assets) async {
