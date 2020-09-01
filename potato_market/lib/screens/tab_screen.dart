@@ -15,59 +15,49 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
-  List<Map<String, Object>> _pages;
-  int _selectedPageIndex = 0;
+  int _selectedIndex = 0;
 
   void _selectPage(int index) {
     if (index == 1) {
-      Navigator.of(context).pushNamed(EditScaffold.routeName);
+      Navigator.of(context).pushNamed(EditScaffold.routeName).then((value) {
+        // 물건을 올리면 홈에서 볼 수 있도록..
+        setState(() {
+          index = 0;
+        });
+      });
     } else {
       setState(() {
-        _selectedPageIndex = index;
+        _selectedIndex = index;
       });
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _pages = [
-      {
-        'appbar': MarketAppBar(),
-        'body': MarketListView(),
-      },
-      {
-        // edit screen
-      },
-      {
-        'appbar': ChatAppBar(),
-        'body': ChatListView(),
-      },
-      {
-        'appbar': ProfileAppBar(),
-        'body': ProfileColumn(),
-      }
-    ];
-  }
+  final List<Widget> _appbars = [
+    MarketAppBar(),
+    null, // edit screen
+    ChatAppBar(),
+    ProfileAppBar(),
+  ];
+  final List<Widget> _bodys = [
+    MarketListView(),
+    Text('글쓰기'), // IndexedStack에 null이면 에러남.
+    ChatListView(),
+    ProfileColumn(),
+  ];
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _pages[_selectedPageIndex]['appbar'],
-      body: _pages[_selectedPageIndex]['body'],
-      bottomNavigationBar: BottomNavigationBar(
+  Widget _bottomNavigationBar(int selectedIndex) => BottomNavigationBar(
         unselectedItemColor: Theme.of(context).unselectedWidgetColor,
         selectedItemColor: Theme.of(context).primaryColor,
         onTap: _selectPage,
-        currentIndex: _selectedPageIndex,
+        currentIndex: selectedIndex,
         type: BottomNavigationBarType.fixed,
-        items: [
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             title: Text('홈'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.wb_iridescent),
+            icon: Icon(Icons.edit),
             title: Text('글쓰기'),
           ),
           BottomNavigationBarItem(
@@ -79,7 +69,17 @@ class _TabScreenState extends State<TabScreen> {
             title: Text('프로필'),
           ),
         ],
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: _appbars[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _bodys,
       ),
+      bottomNavigationBar: _bottomNavigationBar(_selectedIndex),
     );
   }
 }

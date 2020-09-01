@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:potato_market/screens/chat/chat_appbar.dart';
 
 class ChatListView extends StatefulWidget {
   static const routeName = '/chat';

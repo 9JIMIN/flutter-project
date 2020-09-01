@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// import '../screens/detail_screen.dart';
+import '../detail/detail_column.dart';
 
 class ProductItem extends StatelessWidget {
   final title;
@@ -26,10 +26,10 @@ class ProductItem extends StatelessWidget {
         GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
-            // Navigator.of(context).pushNamed(
-            //   DetailScreen.routeName,
-            //   arguments: createdAt, // 문서에 고유의 아이디를 인자로 쓰고 싶은데.. 뭐 없을까?
-            // );
+            Navigator.of(context).pushNamed(
+              DetailColumn.routeName,
+              arguments: createdAt, // 문서에 고유의 아이디를 인자로 쓰고 싶은데.. 뭐 없을까?
+            );
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),

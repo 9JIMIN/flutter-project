@@ -6,10 +6,13 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 
 import '../models/product.dart';
 
-// fetch(상위 20개), more(아래 20개 추가),
-// CRUD
-
 class DBHelper {
+  // 1. create
+  // 2. initData
+  // 3. refreshData
+  // -. getImageUrls
+
+  // create
   static Future<void> create(
     String title,
     int price,
@@ -31,8 +34,8 @@ class DBHelper {
     });
   }
 
-  static Future<List<Product>> getData(DateTime time) async {
-    // 위로 업데이트
+  // initData
+  static Future<List<Product>> initData() async {
     final QuerySnapshot query = await FirebaseFirestore.instance
         .collection('products')
         .orderBy('createdAt', descending: true)
@@ -54,9 +57,36 @@ class DBHelper {
       );
       itemsList.add(product);
     }
-    return itemsList;
+    return itemsList; // 상위 20개
   }
 
+  // refreshData
+  static Future<List<Product>> refreshData(DateTime date) async {
+    final QuerySnapshot query = await FirebaseFirestore.instance
+        .collection('products')
+        .orderBy('createdAt', descending: true)
+        .where('createdAt', isGreaterThan: date) // 받은 시간이후의 문서
+        .get();
+
+    final List<Product> itemsList = [];
+    for (var docsnapshot in query.docs) {
+      final doc = docsnapshot.data();
+      final product = Product(
+        title: doc['title'],
+        price: doc['price'],
+        description: doc['description'],
+        createdAt: doc['createdAt'].toDate(), // 타임스템프를 Date로 바꿔줘야함.
+        imageUrls: doc['imageUrls'],
+        sellerId: doc['sellerId'],
+        likeCount: doc['likeCount'],
+        chatCount: doc['chatCount'],
+      );
+      itemsList.add(product);
+    }
+    return itemsList; // date기준 상위 문서들
+  }
+
+  // 이미지 asset을 받아서 스토리지에 저장후, url을 리턴 
   static Future<List<String>> getImageUrls(List<Asset> assets) async {
     final String sellerId = FirebaseAuth.instance.currentUser.uid;
     final StorageReference ref = FirebaseStorage.instance.ref().child(sellerId);

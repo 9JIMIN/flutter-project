@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:potato_market/helpers/db_helper.dart';
+import 'package:potato_market/providers/products.dart';
+import 'package:provider/provider.dart';
 
-import '../../models/product.dart';
 import './market_product_item.dart';
 
 class MarketListView extends StatefulWidget {
@@ -10,13 +10,8 @@ class MarketListView extends StatefulWidget {
 }
 
 class _MarketListViewState extends State<MarketListView> {
-  List<Product> _products = [];
-
   Future<void> fetchProducts() async {
-    var result = await DBHelper.getData(null);
-    setState(() {
-      _products = result;
-    });
+    Provider.of<Products>(context, listen: false).fetchProducts();
   }
 
   @override
@@ -27,25 +22,27 @@ class _MarketListViewState extends State<MarketListView> {
 
   @override
   Widget build(BuildContext context) {
-    return _products.isEmpty
-        ? Center(
-            child: Text('제품이 없습니다.'),
-          )
-        : RefreshIndicator(
-            onRefresh: fetchProducts,
-            child: ListView.builder(
-              itemCount: _products.length,
-              itemBuilder: (ctx, i) {
-                return ProductItem(
-                  _products[i].title,
-                  _products[i].price,
-                  _products[i].imageUrls[0],
-                  _products[i].createdAt,
-                  _products[i].likeCount,
-                  _products[i].chatCount,
-                );
-              },
+    return Consumer<Products>(
+      builder: (_, products, __) => products.list.isEmpty
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : RefreshIndicator(
+              onRefresh: fetchProducts,
+              child: ListView.builder(
+                itemCount: products.list.length,
+                itemBuilder: (ctx, i) {
+                  return ProductItem(
+                    products.list[i].title,
+                    products.list[i].price,
+                    products.list[i].imageUrls[0],
+                    products.list[i].createdAt,
+                    products.list[i].likeCount,
+                    products.list[i].chatCount,
+                  );
+                },
+              ),
             ),
-          );
+    );
   }
 }

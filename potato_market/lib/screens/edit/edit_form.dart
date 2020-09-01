@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:provider/provider.dart';
 
+import '../market/market_listview.dart';
 import './image_picker.dart';
 import '../../helpers/db_helper.dart';
+import '../../providers/products.dart';
 
 class EditForm extends StatefulWidget {
   @override
@@ -42,6 +45,7 @@ class _EditFormState extends State<EditForm> {
       _description,
       _urls,
     );
+    Provider.of<Products>(context, listen: false).fetchProducts();
     // 홈으로 나가기
     Navigator.of(context).pop();
   }
