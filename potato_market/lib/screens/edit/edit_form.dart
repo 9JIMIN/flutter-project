@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../market/market_listview.dart';
 import './image_picker.dart';
 import '../../helpers/db_helper.dart';
 import '../../providers/products.dart';
@@ -68,19 +67,25 @@ class _EditFormState extends State<EditForm> {
                     ),
                     TextFormField(
                       decoration: InputDecoration(labelText: '제목'),
+                      maxLength: 50,
                       onSaved: (value) {
                         _title = value;
                       },
                     ),
                     TextFormField(
                       decoration: InputDecoration(labelText: '가격'),
+                      keyboardType: TextInputType.number,
+                      validator: (String value){
+                        return value.length <= 11 ? value : '백억원 이상의 물건은 올릴 수 없습니다.';
+                      },
                       onSaved: (value) {
                         _price = value;
                       },
                     ),
                     TextFormField(
                       decoration: InputDecoration(labelText: '내용'),
-                      maxLines: 3,
+                      maxLines: 2,
+                      maxLength: 500,
                       onSaved: (value) {
                         _description = value;
                       },
