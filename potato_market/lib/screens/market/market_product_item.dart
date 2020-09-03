@@ -81,7 +81,6 @@ class ProductItem extends StatelessWidget {
         ugk = zeroDelete(rev(reversedString.substring(8))) + '억 ';
       } else {
         man = zeroDelete(rev(reversedString.substring(4, len)));
-        ugk = '';
       }
       man = man == '0' ? '' : man + '만';
 

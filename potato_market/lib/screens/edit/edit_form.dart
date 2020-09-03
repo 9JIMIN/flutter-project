@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
-import 'package:provider/provider.dart';
-
-import './image_picker.dart';
-import '../../helpers/db_helper.dart';
-import '../../providers/products.dart';
 
 class EditForm extends StatefulWidget {
+  final Function saveData;
+
+  EditForm(this.saveData);
   @override
   _EditFormState createState() => _EditFormState();
 }
@@ -16,89 +13,103 @@ class _EditFormState extends State<EditForm> {
   String _title;
   String _price;
   String _description;
-  List<Asset> _images;
-  bool _isLoading = false;
 
-  void _selectImage(List<Asset> pickedImages) {
-    _images = pickedImages;
+  final FocusNode _titleFocus = FocusNode();
+  final FocusNode _priceFocus = FocusNode();
+  final FocusNode _descriptionFocus = FocusNode();
+
+  void syncData() {
+    widget.saveData(_title, _price, _description);
   }
 
-  void _saveProduct() async {
-    setState(() {
-      _isLoading = true;
-    });
-    _formKey.currentState.save();
-    if (_title.isEmpty || _price.isEmpty || _description.isEmpty) {
-      setState(() {
-        _isLoading = false;
-      });
-      return;
-    }
-    // 사진 올리고, url 받아오기
-    final List<String> _urls = await DBHelper.getImageUrls(_images);
-
-    // DB에 내용 저장
-    DBHelper.create(
-      _title,
-      int.parse(_price),
-      _description,
-      _urls,
-    );
-    Provider.of<Products>(context, listen: false).fetchProducts();
-    // 홈으로 나가기
-    Navigator.of(context).pop();
+  _fieldFocusChange(
+    BuildContext context,
+    FocusNode currentFocus,
+    FocusNode nextFocus,
+  ) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(10),
+    return Form(
+      key: _formKey,
       child: Column(
         children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    Container(
-                      height: 80,
-                      child: PhotoField(_selectImage),
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: '제목'),
-                      maxLength: 50,
-                      onSaved: (value) {
-                        _title = value;
-                      },
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: '가격'),
-                      keyboardType: TextInputType.number,
-                      validator: (String value){
-                        return value.length <= 11 ? value : '백억원 이상의 물건은 올릴 수 없습니다.';
-                      },
-                      onSaved: (value) {
-                        _price = value;
-                      },
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: '내용'),
-                      maxLines: 2,
-                      maxLength: 500,
-                      onSaved: (value) {
-                        _description = value;
-                      },
-                    ),
-                  ],
-                ),
-              ),
+          TextFormField(
+            decoration: InputDecoration(
+              hintText: '제목',
+              border: InputBorder.none,
             ),
+            textInputAction: TextInputAction.next,
+            focusNode: _titleFocus,
+            onFieldSubmitted: (_) {
+              _fieldFocusChange(context, _titleFocus, _priceFocus);
+            },
+            validator: (String value) {
+              if (value.isEmpty) {
+                return '제목을 입력해주세요.';
+              } else if (value.length > 50) {
+                return '50자 이내로 입력하세요.';
+              }
+              return null;
+            },
+            onChanged: (value) {
+              _title = value;
+              syncData();
+            },
           ),
-          RaisedButton.icon(
-            icon: Icon(Icons.file_upload),
-            label: Text(_isLoading ? '게시중..' : '게시'),
-            onPressed: _saveProduct,
+          const Divider(
+            color: Colors.black54,
+          ),
+          TextFormField(
+            decoration: InputDecoration(
+              hintText: '가격',
+              prefixText: '₩ ',
+              border: InputBorder.none,
+            ),
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.next,
+            focusNode: _priceFocus,
+            onFieldSubmitted: (_) {
+              _fieldFocusChange(context, _priceFocus, _descriptionFocus);
+            },
+            validator: (String value) {
+              if (value.length >= 12) {
+                return '백억원 이상의 물건은 올릴 수 없습니다.';
+              } else if (value.isEmpty) {
+                return '가격을 입력해 주세요.';
+              }
+              return null;
+            },
+            onChanged: (value) {
+              _price = value;
+              syncData();
+            },
+          ),
+          const Divider(
+            color: Colors.black54,
+          ),
+          TextFormField(
+            decoration: const InputDecoration(
+              hintText: '내용을 입력해 주세요.',
+              border: InputBorder.none,
+            ),
+            maxLines: null,
+            maxLength: 500,
+            focusNode: _descriptionFocus,
+            textInputAction: TextInputAction.newline,
+            validator: (value) {
+              if (value.isEmpty) {
+                return '올리실 제품에 대한 정보를 입력해주세요.';
+              }
+              return null;
+            },
+            onChanged: (value) {
+              _description = value;
+              syncData();
+            },
           ),
         ],
       ),

@@ -1,36 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
-class PhotoField extends StatefulWidget {
-  final Function selectImages;
+class ImagePicker extends StatefulWidget {
+  final Function saveImages;
 
-  PhotoField(this.selectImages);
+  ImagePicker(this.saveImages);
   @override
-  _PhotoFieldState createState() => _PhotoFieldState();
+  _ImagePickerState createState() => _ImagePickerState();
 }
 
-class _PhotoFieldState extends State<PhotoField> {
-  List<Asset> images = List<Asset>();
+class _ImagePickerState extends State<ImagePicker> {
+  List<Asset> _imagesAsset = List<Asset>();
 
-  @override
-  void initState() {
-    super.initState();
+  void syncData() {
+    widget.saveImages(_imagesAsset);
   }
 
-  Widget buildGridView() {
+  Widget _buildGridView() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: List.generate(images.length, (index) {
-          Asset asset = images[index];
+        children: List.generate(_imagesAsset.length, (index) {
+          Asset asset = _imagesAsset[index];
           return Container(
-            margin: const EdgeInsets.only(left: 10),
+            margin: const EdgeInsets.only(right: 15),
             child: Stack(
+              overflow: Overflow.visible,
               children: <Widget>[
-                AssetThumb(
-                  asset: asset,
-                  width: 300,
-                  height: 300,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: AssetThumb(
+                    quality: 10,
+                    asset: asset,
+                    width: 300,
+                    height: 300,
+                  ),
                 ),
                 Positioned(
                   top: 0,
@@ -38,7 +42,7 @@ class _PhotoFieldState extends State<PhotoField> {
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
-                        images.removeAt(index);
+                        _imagesAsset.removeAt(index);
                       });
                     },
                     child: Icon(
@@ -55,13 +59,13 @@ class _PhotoFieldState extends State<PhotoField> {
     );
   }
 
-  Future<void> loadAssets() async {
+  Future<void> _loadAssets() async {
     List<Asset> resultList = List<Asset>();
 
     resultList = await MultiImagePicker.pickImages(
       maxImages: 10,
       enableCamera: true,
-      selectedAssets: images,
+      selectedAssets: _imagesAsset,
       cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
       materialOptions: MaterialOptions(
         statusBarColor: "#FF4E342E",
@@ -76,8 +80,8 @@ class _PhotoFieldState extends State<PhotoField> {
     if (!mounted) return;
 
     setState(() {
-      images = resultList;
-      widget.selectImages(images);
+      _imagesAsset = resultList;
+      syncData();
     });
   }
 
@@ -85,18 +89,25 @@ class _PhotoFieldState extends State<PhotoField> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        InkWell(
-          child: Container(
+        SizedBox(
+          width: 70,
+          child: RaisedButton(
+            onPressed: _loadAssets,
             color: Theme.of(context).primaryColorLight,
-            padding: EdgeInsets.all(30),
-            child: Icon(
-              Icons.photo_camera,
+            padding: EdgeInsets.only(top: 15),
+            child: Column(
+              children: [
+                Icon(Icons.photo_camera),
+                Text('${_imagesAsset.length}/10'),
+              ],
             ),
           ),
-          onTap: loadAssets,
+        ),
+        SizedBox(
+          width: 15,
         ),
         Expanded(
-          child: buildGridView(),
+          child: _buildGridView(),
         ),
       ],
     );

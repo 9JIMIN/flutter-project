@@ -29,16 +29,25 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'potato market',
         theme: ThemeData(
+          // appbar theme
+          appBarTheme: AppBarTheme.of(context).copyWith(
+            textTheme: TextTheme(
+              headline1: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+          // button theme
+          buttonTheme: ButtonTheme.of(context).copyWith(
+            buttonColor: Theme.of(context).primaryColorLight,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
           primarySwatch: Colors.brown,
           unselectedWidgetColor: Colors.black54,
           errorColor: Colors.red[800],
-          buttonTheme: ButtonTheme.of(context).copyWith(
-            buttonColor: Colors.brown[800],
-            textTheme: ButtonTextTheme.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
         ),
         home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
