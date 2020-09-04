@@ -19,12 +19,7 @@ class _TabScreenState extends State<TabScreen> {
 
   void _selectPage(int index) {
     if (index == 1) {
-      Navigator.of(context).pushNamed(EditScaffold.routeName).then((value) {
-        // 물건을 올리면 홈에서 볼 수 있도록..
-        setState(() {
-          index = 0;
-        });
-      });
+      Navigator.of(context).pushNamed(EditScaffold.routeName);
     } else {
       setState(() {
         _selectedIndex = index;

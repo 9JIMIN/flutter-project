@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import './edit_form.dart';
 import './image_picker.dart';
@@ -19,6 +20,8 @@ class _EditScaffoldState extends State<EditScaffold> {
   String _price;
   String _description;
   List<Asset> _assets;
+  List<String> _urls;
+  final GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
   bool _isLoading = false;
 
@@ -33,16 +36,34 @@ class _EditScaffoldState extends State<EditScaffold> {
   }
 
   void _uploadData() async {
-    List<String> _urls = await DBHelper.getImageUrls(_assets);
-    int _intPrice = int.parse(_price);
-    await DBHelper.create(
-      _title,
-      _intPrice,
-      _description,
-      _urls,
-    );
-    Provider.of<Products>(context, listen: false).fetchProducts();
-    Navigator.of(context).pop();
+    FocusScope.of(context).unfocus();
+    formkey.currentState.save();
+    if (formkey.currentState.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      if (_assets == null) {
+        _urls = await DBHelper.getPotatoUrl();
+      } else {
+        _urls = await DBHelper.getImageUrls(_assets);
+      }
+      int _intPrice = int.parse(_price);
+
+      await DBHelper.create(
+        _title,
+        _intPrice,
+        _description,
+        _urls,
+      );
+      await Provider.of<Products>(context, listen: false).fetchProducts();
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.of(context).pop();
+    } else {
+      return;
+    }
   }
 
   @override
@@ -54,31 +75,32 @@ class _EditScaffoldState extends State<EditScaffold> {
           FlatButton(
             child: Text('완료'),
             onPressed: _uploadData,
-          )
+          ),
         ],
       ),
-      body: _isLoading
-          ? CircularProgressIndicator()
-          : SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(15),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 70,
-                      child: ImagePicker(_saveImages),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    const Divider(
-                      color: Colors.black54,
-                    ),
-                    EditForm(_saveData),
-                  ],
+      body: ModalProgressHUD(
+        inAsyncCall: _isLoading,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              children: [
+                Container(
+                  height: 70,
+                  child: ImagePicker(_saveImages),
                 ),
-              ),
+                SizedBox(
+                  height: 10,
+                ),
+                const Divider(
+                  color: Colors.black54,
+                ),
+                EditForm(_saveData, formkey),
+              ],
             ),
+          ),
+        ),
+      ),
     );
   }
 }

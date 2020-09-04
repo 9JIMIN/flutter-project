@@ -93,7 +93,7 @@ class DBHelper {
     List<String> urls = List<String>();
 
     for (var image in assets) {
-      ByteData byteData = await image.getByteData();
+      ByteData byteData = await image.getByteData(quality: 50);
       List<int> imageData = byteData.buffer.asUint8List();
       final photoRef = ref.child(DateTime.now().toString() + '.jpg');
       final finRef = await photoRef.putData(imageData).onComplete;
@@ -101,6 +101,14 @@ class DBHelper {
       urls.add(downloadUrl);
     }
 
+    return urls;
+  }
+
+  static Future<List<String>> getPotatoUrl() async{
+    List<String> urls = List<String>();
+    final ref = FirebaseStorage.instance.ref().child('default-images').child('potato.png');
+    final url = await ref.getDownloadURL();
+    urls.add(url);
     return urls;
   }
 }

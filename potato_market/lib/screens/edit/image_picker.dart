@@ -61,21 +61,27 @@ class _ImagePickerState extends State<ImagePicker> {
 
   Future<void> _loadAssets() async {
     List<Asset> resultList = List<Asset>();
+    String error;
 
-    resultList = await MultiImagePicker.pickImages(
-      maxImages: 10,
-      enableCamera: true,
-      selectedAssets: _imagesAsset,
-      cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
-      materialOptions: MaterialOptions(
-        statusBarColor: "#FF4E342E",
-        actionBarColor: "#FF6D4C41",
-        actionBarTitle: "사진선택",
-        allViewTitle: "전체 사진",
-        useDetailsView: false,
-        selectCircleStrokeColor: "#FF6D4C41",
-      ),
-    );
+    try {
+      resultList = await MultiImagePicker.pickImages(
+        maxImages: 10,
+        enableCamera: true,
+        selectedAssets: _imagesAsset,
+        cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
+        materialOptions: MaterialOptions(
+          statusBarColor: "#FF4E342E",
+          actionBarColor: "#FF6D4C41",
+          actionBarTitle: "사진선택",
+          allViewTitle: "전체 사진",
+          useDetailsView: false,
+          selectCircleStrokeColor: "#FF6D4C41",
+        ),
+      );
+    } on Exception catch (e) {
+      error = e.toString();
+      print(error);
+    }
 
     if (!mounted) return;
 

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class EditForm extends StatefulWidget {
   final Function saveData;
+  final GlobalKey formkey;
 
-  EditForm(this.saveData);
+  EditForm(this.saveData, this.formkey);
   @override
   _EditFormState createState() => _EditFormState();
 }
 
 class _EditFormState extends State<EditForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _title;
   String _price;
   String _description;
@@ -34,7 +35,7 @@ class _EditFormState extends State<EditForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: widget.formkey,
       child: Column(
         children: [
           TextFormField(
@@ -55,7 +56,7 @@ class _EditFormState extends State<EditForm> {
               }
               return null;
             },
-            onChanged: (value) {
+            onSaved: (value) {
               _title = value;
               syncData();
             },
@@ -71,19 +72,23 @@ class _EditFormState extends State<EditForm> {
             ),
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
+            // maxLength: 15,
             focusNode: _priceFocus,
             onFieldSubmitted: (_) {
               _fieldFocusChange(context, _priceFocus, _descriptionFocus);
             },
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
             validator: (String value) {
-              if (value.length >= 12) {
-                return '백억원 이상의 물건은 올릴 수 없습니다.';
-              } else if (value.isEmpty) {
+              if (value.isEmpty) {
                 return '가격을 입력해 주세요.';
+              } else if (value.length >= 12) {
+                return '백원원 이상의 물건을 올릴 수 없습니다.';
               }
               return null;
             },
-            onChanged: (value) {
+            onSaved: (String value) {
               _price = value;
               syncData();
             },
@@ -106,7 +111,7 @@ class _EditFormState extends State<EditForm> {
               }
               return null;
             },
-            onChanged: (value) {
+            onSaved: (value) {
               _description = value;
               syncData();
             },
