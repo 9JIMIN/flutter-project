@@ -33,6 +33,7 @@ class _MarketListViewState extends State<MarketListView> {
                 itemCount: products.list.length,
                 itemBuilder: (ctx, i) {
                   return ProductItem(
+                    products.list[i].id,
                     products.list[i].title,
                     products.list[i].price,
                     products.list[i].imageUrls[0],

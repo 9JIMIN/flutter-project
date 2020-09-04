@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:potato_market/helpers/db_helper.dart';
 
 import './auth_form.dart';
+import '../../helpers/db_helper_user.dart';
 
 class AuthScaffold extends StatefulWidget {
   @override
@@ -13,7 +15,7 @@ class _AuthScaffoldState extends State<AuthScaffold> {
   final _auth = FirebaseAuth.instance;
   var _isLoading = false;
 
-  void _submitAuthForm(
+  Future<void> _submitAuthForm(
     String username,
     String email,
     String password,
@@ -37,13 +39,7 @@ class _AuthScaffoldState extends State<AuthScaffold> {
         );
 
         // DB에도 유저정보 저장하기
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(authResult.user.uid)
-            .set({
-          'username': username,
-          'email': email,
-        });
+        await DBHelperUser.create(authResult, username, email);
 
         setState(() {
           _isLoading = false;

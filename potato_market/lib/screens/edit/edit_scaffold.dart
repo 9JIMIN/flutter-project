@@ -7,6 +7,7 @@ import './edit_form.dart';
 import './image_picker.dart';
 import '../../helpers/db_helper.dart';
 import '../../providers/products.dart';
+import '../../helpers/storage_helper.dart';
 
 class EditScaffold extends StatefulWidget {
   static const routeName = '/edit';
@@ -44,9 +45,9 @@ class _EditScaffoldState extends State<EditScaffold> {
       });
 
       if (_assets == null) {
-        _urls = await DBHelper.getPotatoUrl();
+        _urls = await StorageHelper.getPotatoUrl();
       } else {
-        _urls = await DBHelper.getImageUrls(_assets);
+        _urls = await StorageHelper.getImageUrls(_assets);
       }
       int _intPrice = int.parse(_price);
 

@@ -1,6 +1,7 @@
 class Product {
+  final String id;
   final String title;
-  final int price;
+  final String price;
   final String description;
   final DateTime createdAt;
   final List imageUrls;
@@ -9,6 +10,7 @@ class Product {
   final int chatCount;
 
   Product({
+    this.id,
     this.title,
     this.price,
     this.description,

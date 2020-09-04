@@ -24,6 +24,9 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 
+  Product findById(String id) =>
+      _list.firstWhere((element) => element.id == id);
+
   // delete
 
   // downScroll

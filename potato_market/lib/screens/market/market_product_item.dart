@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../detail/detail_column.dart';
 
 class ProductItem extends StatelessWidget {
+  final id;
   final title;
   final price;
   final thumbnail;
@@ -12,6 +13,7 @@ class ProductItem extends StatelessWidget {
   final chatCount;
 
   ProductItem(
+    this.id,
     this.title,
     this.price,
     this.thumbnail,
@@ -56,38 +58,6 @@ class ProductItem extends StatelessWidget {
     }
   }
 
-  String rev(str) => str.split('').reversed.join();
-  String zeroDelete(str) => int.parse(str).toString();
-
-  String formatedPrice() {
-    String stringPrice = price.toString();
-    var f = new NumberFormat('#,###');
-    if (stringPrice.length <= 5) {
-      // 10만원 미만
-      return f.format(price) + '원';
-    } else {
-      // 10만원 이상이 되면, 억-만 단위를 붙여줌.
-      var reversedString = rev(stringPrice);
-      // 원
-      var won = zeroDelete(rev(reversedString.substring(0, 4)));
-      won = won == '0' ? '원' : ' ' + won + '원';
-
-      // 만, 억
-      var man = '';
-      var ugk = '';
-      int len = stringPrice.length;
-      if (len >= 9) {
-        man = zeroDelete(rev(reversedString.substring(4, 8)));
-        ugk = zeroDelete(rev(reversedString.substring(8))) + '억 ';
-      } else {
-        man = zeroDelete(rev(reversedString.substring(4, len)));
-      }
-      man = man == '0' ? '' : man + '만';
-
-      return ugk + man + won;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -97,7 +67,7 @@ class ProductItem extends StatelessWidget {
           onTap: () {
             Navigator.of(context).pushNamed(
               DetailColumn.routeName,
-              arguments: createdAt, // 문서에 고유의 아이디를 인자로 쓰고 싶은데.. 뭐 없을까?
+              arguments: id, // 문서에 고유의 아이디를 인자로 쓰고 싶은데.. 뭐 없을까?
             );
           },
           child: Padding(
@@ -107,14 +77,17 @@ class ProductItem extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  AspectRatio(
-                    aspectRatio: 1.0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                          image: NetworkImage(thumbnail),
-                          fit: BoxFit.cover,
+                  Hero(
+                    tag: id,
+                    child: AspectRatio(
+                      aspectRatio: 1.0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                            image: NetworkImage(thumbnail),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
@@ -147,7 +120,7 @@ class ProductItem extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              formatedPrice(),
+                              price,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 18,

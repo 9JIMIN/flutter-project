@@ -4,7 +4,7 @@ class AuthForm extends StatefulWidget {
   AuthForm(this.submitFn, this.isLoading);
 
   final bool isLoading;
-  final void Function(
+  final Future<void> Function(
     String username,
     String email,
     String password,
@@ -23,9 +23,9 @@ class _AuthFormState extends State<AuthForm> {
   var _password = '';
   var _isLogin = true;
 
-  void _trySubmit() {
+  void _trySubmit() async {
     _formKey.currentState.save();
-    widget.submitFn(
+    await widget.submitFn(
       _username,
       _userEmail,
       _password,

@@ -1,16 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/services.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 import '../models/product.dart';
+import './price_formatter.dart';
 
 class DBHelper {
   // 1. create
   // 2. initData
   // 3. refreshData
-  // -. getImageUrls
 
   // create
   static Future<void> create(
@@ -21,10 +19,14 @@ class DBHelper {
   ) async {
     final DateTime createdAt = DateTime.now();
     final String sellerId = FirebaseAuth.instance.currentUser.uid;
-
+    final String formattedPrice = priceFormatter(price);
+    final String id = Uuid().v4();
+    
     await FirebaseFirestore.instance.collection('products').add({
+      'id': id,
       'title': title,
       'price': price,
+      'formattedPrice': formattedPrice,
       'description': description,
       'imageUrls': imageUrls,
       'sellerId': sellerId,
@@ -46,8 +48,9 @@ class DBHelper {
     for (var docsnapshot in query.docs) {
       final doc = docsnapshot.data();
       final product = Product(
+        id: doc['id'],
         title: doc['title'],
-        price: doc['price'],
+        price: doc['formattedPrice'],
         description: doc['description'],
         createdAt: doc['createdAt'].toDate(), // 타임스템프를 Date로 바꿔줘야함.
         imageUrls: doc['imageUrls'],
@@ -72,8 +75,9 @@ class DBHelper {
     for (var docsnapshot in query.docs) {
       final doc = docsnapshot.data();
       final product = Product(
+        id: doc['id'],
         title: doc['title'],
-        price: doc['price'],
+        price: doc['formattedPrice'],
         description: doc['description'],
         createdAt: doc['createdAt'].toDate(), // 타임스템프를 Date로 바꿔줘야함.
         imageUrls: doc['imageUrls'],
@@ -84,31 +88,5 @@ class DBHelper {
       itemsList.add(product);
     }
     return itemsList; // date기준 상위 문서들
-  }
-
-  // 이미지 asset을 받아서 스토리지에 저장후, url을 리턴 
-  static Future<List<String>> getImageUrls(List<Asset> assets) async {
-    final String sellerId = FirebaseAuth.instance.currentUser.uid;
-    final StorageReference ref = FirebaseStorage.instance.ref().child(sellerId);
-    List<String> urls = List<String>();
-
-    for (var image in assets) {
-      ByteData byteData = await image.getByteData(quality: 50);
-      List<int> imageData = byteData.buffer.asUint8List();
-      final photoRef = ref.child(DateTime.now().toString() + '.jpg');
-      final finRef = await photoRef.putData(imageData).onComplete;
-      final String downloadUrl = await finRef.ref.getDownloadURL();
-      urls.add(downloadUrl);
-    }
-
-    return urls;
-  }
-
-  static Future<List<String>> getPotatoUrl() async{
-    List<String> urls = List<String>();
-    final ref = FirebaseStorage.instance.ref().child('default-images').child('potato.png');
-    final url = await ref.getDownloadURL();
-    urls.add(url);
-    return urls;
   }
 }
