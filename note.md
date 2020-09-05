@@ -617,16 +617,38 @@ final Future<Database> database = openDatabase(
 
 # 4. Firebase
 
-## 4.1. 프로젝트 생성&연결
+## 4.1. 앱 연결
 
-1. Firebase 새 프로젝트
-2. `google-services.json`, `gradle` 설정
-3. [Firebase plugins for Flutter](https://firebase.flutter.dev/) 여기서 필요한거 `pubspec.yaml`에 추가
+1. 프로젝트 이름설정
 
-> cloud-firestore에서 dex..에러
-> android/app/build.gradle=>
-> defaultConfig => multiDexEnabled true추가
-> dependencies => implementation 'com.android.support:multidex:1.0.3'추가
+2. 구글 애널리틱스 계정생성
+
+3. 콘솔에서 <앱을 추가하여 시작하기: 안드로이드>
+
+4. android/app/build.gradle파일의 `applicationId: "com.example.<앱이름>"`  이걸 넣어준다.
+
+5. `google-services.json` 파일을 `android/app` 디렉토리에 다운받는다.
+
+6. `android/build.gradle` 에 `dependencies` 에 classpath~~ 추가하기, 
+   `android/app/build.gradle` 에  apply plugin~~, `dependencies`에 implementation 추가.
+
+7. multidex 사용설정 = [공식문서](https://developer.android.com/studio/build/multidex)
+   android/app/build.gradle 파일에 
+
+   ```
+   defaultConfig {... multiDexEnabled true 추가}, dependencies{... implementation 'com.android.support:multidex:1.0.3' 추가}
+   ```
+
+8. `firebase_core`를 dependencies에 추가
+   그리고, main 함수를 아래와 같이 바꿈.
+
+   ```dart
+   void main() async {
+     WidgetsFlutterBinding.ensureInitialized();
+     await Firebase.initializeApp();
+     runApp(MyApp());
+   }
+   ```
 
 
 
@@ -651,3 +673,58 @@ StreamBuilder(
 ```
 
 [최근 업데이트](https://github.com/invertase/flutterfire/pull/30)
+
+
+
+### 4.2.2. cloud_firestore
+
+[사용법 문서](https://firebase.flutter.dev/docs/firestore/usage/)
+
+- 콜렉션 전체 문서, 한 문서 두가지로 받을 수 있음.
+
+```dart
+// 특정 문서를 가져올 때
+<Future> FirebaseFirestore.instance.collection('콜렉션 이름').doc(문서 아이디).get()
+<Stream> FirebaseFirestore.instance.collection('콜렉션 이름').doc(문서 아이디).snapshots()
+
+// 콜렉션 전체 문서를 가져올때
+<Future> FirebaseFirestore.instance.collection('콜렉션 이름').get()
+<Stream> FirebaseFirestore.instance.collection('콜렉션 이름').snapshots()
+```
+
+- `Future`, `Stream` 두가지로 받을 수 있음.
+
+  - \<Future> => `get()` 
+  - \<Stream> => `snapshots()` 
+
+- type
+
+  - `QuerySnapShot`, `DocumentSnapShot`
+    Future로 get()을 하고, 잡은 `snapshot.data`가 `QuerySnapShot` 타입이다.
+    뒤에 docs를 붙이면 `DocumentSnapShot` 타입이 된다. 
+
+    ```dart
+    FutureBuilder(
+            future: FirebaseFirestore.instance.collection('test').get(),
+            builder: (ctx, snapshot) {
+              if (snapshot.hasError) {
+                final List<DocumentSnapshot> data = snapshot.data.docs;
+    ```
+
+  - QuerySnapShot => DocumentSnapShot => Map이렇게 바꿔야 한다.  `data()` 를 이용.
+
+    ```dart
+    //...
+    final List<DocumentSnapshot> data = snapshot.data.docs;
+             return ListView.builder(
+               itemCount: data.length,
+               itemBuilder: (ctx, index) {
+                 return ListTile(
+                   title: Text(data[index].data()['title']), // <DocumentSnapShot>.data()는 문서의 내용을 <Map>으로 바꾼다.
+                   subtitle: Text(data[index].data()['price'].toString() + '원'), // number필드타입은 string으로 바꾼다.
+                 );
+               },
+             );
+    ```
+
+    

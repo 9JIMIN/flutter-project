@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
           buttonTheme: ButtonTheme.of(context).copyWith(
             buttonColor: Theme.of(context).primaryColorLight,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(5),
             ),
           ),
           primarySwatch: Colors.brown,
