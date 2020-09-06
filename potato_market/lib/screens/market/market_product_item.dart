@@ -25,7 +25,8 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String formattedDate = Provider.of<Products>(context, listen: false).formatedDate(createdAt);
+    String formattedDate =
+        Provider.of<Products>(context, listen: false).formatedDate(createdAt);
     return Column(
       children: [
         GestureDetector(
@@ -47,13 +48,11 @@ class ProductItem extends StatelessWidget {
                     tag: id,
                     child: AspectRatio(
                       aspectRatio: 1.0,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                            image: NetworkImage(thumbnail),
-                            fit: BoxFit.cover,
-                          ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          thumbnail,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
@@ -69,7 +68,8 @@ class ProductItem extends StatelessWidget {
                           children: [
                             Text(
                               title,
-                              overflow: TextOverflow.ellipsis,
+                              overflow:
+                                  TextOverflow.ellipsis, // 화면초과 글자를 ... 처리
                               maxLines: 2,
                               style: TextStyle(
                                 fontSize: 18,
@@ -87,7 +87,6 @@ class ProductItem extends StatelessWidget {
                             ),
                             Text(
                               price,
-                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -98,7 +97,25 @@ class ProductItem extends StatelessWidget {
                         Positioned(
                           bottom: 10,
                           right: 10,
-                          child: Text('$likeCount' + '-' + '$chatCount'),
+                          child: Row(
+                            children: [
+                              if (chatCount != 0)
+                                Row(
+                                  children: [
+                                    Icon(Icons.chat_bubble_outline),
+                                    Text('$chatCount'),
+                                    SizedBox(width: 5),
+                                  ],
+                                ),
+                              if (likeCount != 0)
+                                Row(
+                                  children: [
+                                    Icon(Icons.favorite_border),
+                                    Text('$likeCount'),
+                                  ],
+                                )
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -109,7 +126,7 @@ class ProductItem extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Divider(
             color: Theme.of(context).primaryColor,
             height: 1,

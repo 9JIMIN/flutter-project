@@ -28,7 +28,7 @@ class _ImagePickerState extends State<ImagePicker> {
               overflow: Overflow.visible,
               children: <Widget>[
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(5),
                   child: AssetThumb(
                     quality: 10,
                     asset: asset,

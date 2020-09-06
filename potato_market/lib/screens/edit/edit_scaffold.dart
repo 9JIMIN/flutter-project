@@ -74,7 +74,13 @@ class _EditScaffoldState extends State<EditScaffold> {
         title: Text('글쓰기'),
         actions: <Widget>[
           FlatButton(
-            child: Text('완료'),
+            child: Text(
+              '완료',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+              ),
+            ),
             onPressed: _uploadData,
           ),
         ],
@@ -90,7 +96,7 @@ class _EditScaffoldState extends State<EditScaffold> {
                   height: 70,
                   child: ImagePicker(_saveImages),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 const Divider(

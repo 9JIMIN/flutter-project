@@ -32,9 +32,9 @@ class MyApp extends StatelessWidget {
           // appbar theme
           appBarTheme: AppBarTheme.of(context).copyWith(
             textTheme: TextTheme(
-              headline1: TextStyle(
+              headline6: TextStyle(
                 fontSize: 20,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),

@@ -23,7 +23,7 @@ class _EditFormState extends State<EditForm> {
     widget.saveData(_title, _price, _description);
   }
 
-  _fieldFocusChange(
+  void _fieldFocusChange(
     BuildContext context,
     FocusNode currentFocus,
     FocusNode nextFocus,

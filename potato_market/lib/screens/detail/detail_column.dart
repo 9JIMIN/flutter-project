@@ -105,27 +105,29 @@ class _DetailColumnState extends State<DetailColumn> {
                         );
                       }).toList(),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: product.imageUrls.map((url) {
-                        int index = product.imageUrls.indexOf(url);
-                        return Container(
-                          width: 8.0,
-                          height: 8.0,
-                          margin: EdgeInsets.symmetric(
-                            vertical: 5,
-                            horizontal: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: carousel == index
-                                ? Colors.white
-                                : Colors.white54,
-                          ),
-                        );
-                      }).toList(),
-                    ),
+                    product.imageUrls.length > 1
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: product.imageUrls.map((url) {
+                              int index = product.imageUrls.indexOf(url);
+                              return Container(
+                                width: 8.0,
+                                height: 8.0,
+                                margin: EdgeInsets.symmetric(
+                                  vertical: 5,
+                                  horizontal: 3,
+                                ),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: carousel == index
+                                      ? Colors.white
+                                      : Colors.white54,
+                                ),
+                              );
+                            }).toList(),
+                          )
+                        : SizedBox.shrink()
                   ],
                 ),
               ),
@@ -154,9 +156,7 @@ class _DetailColumnState extends State<DetailColumn> {
                                       backgroundImage:
                                           NetworkImage(product.imageUrls[0]),
                                     ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
+                                    SizedBox(width: 10),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -187,12 +187,8 @@ class _DetailColumnState extends State<DetailColumn> {
                               );
                             }
                           }),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Divider(
-                        color: Colors.black54,
-                      ),
+                      SizedBox(height: 10),
+                      Divider(color: Colors.black54),
                       SizedBox(height: 10),
                       Text(
                         '${product.title}',
@@ -201,35 +197,27 @@ class _DetailColumnState extends State<DetailColumn> {
                           fontSize: 25,
                         ),
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
+                      SizedBox(height: 5),
                       Row(
                         children: [
                           Text('카테고리 - '),
                           Text(formattedDate),
                         ],
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 10),
                       Text(
                         product.description,
                         style: TextStyle(fontSize: 20),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 10),
                       Row(
                         children: [
                           Text('채팅 ${product.chatCount}개 - '),
                           Text('관심 ${product.likeCount}개 - '),
-                          Text('조회 ${product.likeCount}개'),
+                          Text('조회 ${product.likeCount}개'), // 아직 없는 필드
                         ],
                       ),
-                      SizedBox(
-                        height: 800,
-                      )
+                      SizedBox(height: 800),
                     ],
                   ),
                 ),
@@ -255,6 +243,7 @@ class _DetailColumnState extends State<DetailColumn> {
               thickness: 0.3,
             ),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   product.price,
