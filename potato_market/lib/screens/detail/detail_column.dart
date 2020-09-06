@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:potato_market/helpers/db_helper_profile.dart';
 import 'package:provider/provider.dart';
@@ -6,12 +7,42 @@ import '../../providers/products.dart';
 import '../../models/product.dart';
 import '../../models/profile.dart';
 
-class DetailColumn extends StatelessWidget {
+class DetailColumn extends StatefulWidget {
   static const routeName = '/detail';
 
+  @override
+  _DetailColumnState createState() => _DetailColumnState();
+}
+
+class _DetailColumnState extends State<DetailColumn> {
   Future<Profile> getProfile(id) async {
     Profile profile = await DBHelperProfile.findById(id);
     return profile;
+  }
+
+  final ScrollController _scrollController = ScrollController();
+  bool title = false;
+  int carousel = 0;
+
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.offset > 380) {
+        setState(() {
+          title = true;
+        });
+      } else {
+        setState(() {
+          title = false;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -26,9 +57,11 @@ class DetailColumn extends StatelessWidget {
 
     return Scaffold(
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: <Widget>[
           // 스크롤 가능한 영역
           SliverAppBar(
+            title: title ? Text('${product.title}') : null,
             actions: [
               IconButton(
                 icon: Icon(Icons.share),
@@ -42,12 +75,58 @@ class DetailColumn extends StatelessWidget {
             expandedHeight: 300,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(product.title),
               background: Hero(
                 tag: product.id,
-                child: Image.network(
-                  product.imageUrls[0],
-                  fit: BoxFit.cover,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CarouselSlider(
+                      options: CarouselOptions(
+                          enableInfiniteScroll: false,
+                          viewportFraction: 1,
+                          initialPage: 0,
+                          aspectRatio: 1,
+                          onPageChanged: (index, _) {
+                            setState(() {
+                              carousel = index;
+                            });
+                          }),
+                      items: product.imageUrls.map((url) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              child: Image.network(
+                                url,
+                                fit: BoxFit.fitWidth,
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: product.imageUrls.map((url) {
+                        int index = product.imageUrls.indexOf(url);
+                        return Container(
+                          width: 8.0,
+                          height: 8.0,
+                          margin: EdgeInsets.symmetric(
+                            vertical: 5,
+                            horizontal: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: carousel == index
+                                ? Colors.white
+                                : Colors.white54,
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ),
               ),
             ),
