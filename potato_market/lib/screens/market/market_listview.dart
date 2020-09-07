@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:potato_market/providers/products.dart';
+import 'package:potato_market/providers/provider_products.dart';
 import 'package:provider/provider.dart';
 
 import './market_product_item.dart';
@@ -11,7 +11,7 @@ class MarketListView extends StatefulWidget {
 
 class _MarketListViewState extends State<MarketListView> {
   Future<void> fetchProducts() async {
-    Provider.of<Products>(context, listen: false).fetchProducts();
+    Provider.of<ProviderProducts>(context, listen: false).fetchUp();
   }
 
   @override
@@ -22,7 +22,7 @@ class _MarketListViewState extends State<MarketListView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Products>(
+    return Consumer<ProviderProducts>(
       builder: (_, products, __) => products.list.isEmpty
           ? Center(
               child: CircularProgressIndicator(),

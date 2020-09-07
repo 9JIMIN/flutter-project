@@ -4,9 +4,9 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import './edit_form.dart';
-import './image_picker.dart';
-import '../../helpers/db_helper.dart';
-import '../../providers/products.dart';
+import './edit_image_picker.dart';
+import '../../helpers/db_helper_product.dart';
+import '../../providers/provider_products.dart';
 import '../../helpers/storage_helper.dart';
 
 class EditScaffold extends StatefulWidget {
@@ -45,19 +45,19 @@ class _EditScaffoldState extends State<EditScaffold> {
       });
 
       if (_assets == null) {
-        _urls = await StorageHelper.getPotatoUrl();
+        _urls = await StorageHelper.getDefaultProductUrl();
       } else {
         _urls = await StorageHelper.getImageUrls(_assets);
       }
       int _intPrice = int.parse(_price);
 
-      await DBHelper.create(
+      await DBHelperProduct.addProduct(
         _title,
         _intPrice,
         _description,
         _urls,
       );
-      await Provider.of<Products>(context, listen: false).fetchProducts();
+      await Provider.of<ProviderProducts>(context, listen: false).fetchUp();
       setState(() {
         _isLoading = false;
       });
@@ -94,7 +94,7 @@ class _EditScaffoldState extends State<EditScaffold> {
               children: [
                 Container(
                   height: 70,
-                  child: ImagePicker(_saveImages),
+                  child: EditImagePicker(_saveImages),
                 ),
                 const SizedBox(
                   height: 10,

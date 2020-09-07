@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:potato_market/providers/provider_products.dart';
 import 'package:potato_market/screens/detail/detail_column.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +14,7 @@ import './screens/loading_screen.dart';
 import './screens/tab_screen.dart';
 
 // providers
-import './providers/products.dart';
+import './providers/provider_products.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => Products(),
+      create: (_) => ProviderProducts(),
       child: MaterialApp(
         title: 'potato market',
         theme: ThemeData(

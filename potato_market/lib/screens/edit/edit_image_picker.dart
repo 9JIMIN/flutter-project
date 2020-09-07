@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
-class ImagePicker extends StatefulWidget {
+class EditImagePicker extends StatefulWidget {
   final Function saveImages;
 
-  ImagePicker(this.saveImages);
+  EditImagePicker(this.saveImages);
   @override
   _ImagePickerState createState() => _ImagePickerState();
 }
 
-class _ImagePickerState extends State<ImagePicker> {
+class _ImagePickerState extends State<EditImagePicker> {
   List<Asset> _imagesAsset = List<Asset>();
 
   void syncData() {

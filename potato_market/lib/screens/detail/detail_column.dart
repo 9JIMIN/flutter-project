@@ -1,11 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:potato_market/helpers/db_helper_profile.dart';
+import 'package:potato_market/providers/provider_products.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/products.dart';
+import '../../providers/provider_products.dart';
 import '../../models/product.dart';
 import '../../models/profile.dart';
+import '../../helpers/format_factory.dart';
 
 class DetailColumn extends StatefulWidget {
   static const routeName = '/detail';
@@ -50,10 +52,9 @@ class _DetailColumnState extends State<DetailColumn> {
     final id = ModalRoute.of(context).settings.arguments;
 
     Product product =
-        Provider.of<Products>(context, listen: false).findById(id);
+        Provider.of<ProviderProducts>(context, listen: false).findById(id);
 
-    String formattedDate = Provider.of<Products>(context, listen: false)
-        .formatedDate(product.createdAt);
+    String formattedDate = FormatFactory.dateFormatter(product.createdAt);
 
     return Scaffold(
       body: CustomScrollView(

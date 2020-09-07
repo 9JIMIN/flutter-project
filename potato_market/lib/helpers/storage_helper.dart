@@ -18,11 +18,10 @@ class StorageHelper{
       final String downloadUrl = await finRef.ref.getDownloadURL();
       urls.add(downloadUrl);
     }
-
     return urls;
   }
 
-  static Future<List<String>> getPotatoUrl() async {
+  static Future<List<String>> getDefaultProductUrl() async {
     List<String> urls = List<String>();
     final ref = FirebaseStorage.instance
         .ref()

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../detail/detail_column.dart';
-import '../../providers/products.dart';
+import '../../helpers/format_factory.dart';
 
 class ProductItem extends StatelessWidget {
   final id;
@@ -25,8 +24,7 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String formattedDate =
-        Provider.of<Products>(context, listen: false).formatedDate(createdAt);
+    String formattedDate = FormatFactory.dateFormatter(createdAt);
     return Column(
       children: [
         GestureDetector(

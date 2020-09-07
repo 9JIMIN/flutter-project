@@ -60,21 +60,21 @@ class _AuthFormState extends State<AuthForm> {
                         key: ValueKey('nickname'),
                         decoration: InputDecoration(labelText: '닉네임'),
                         onSaved: (value) {
-                          _username = value;
+                          _username = value.trim();
                         },
                       ),
                     TextFormField(
                       key: ValueKey('email'),
                       decoration: InputDecoration(labelText: '메일주소'),
                       onSaved: (value) {
-                        _userEmail = value;
+                        _userEmail = value.trim();
                       },
                     ),
                     TextFormField(
                       key: ValueKey('pass'),
                       decoration: InputDecoration(labelText: '패스워드'),
                       onSaved: (value) {
-                        _password = value;
+                        _password = value.trim();
                       },
                     ),
                     SizedBox(
