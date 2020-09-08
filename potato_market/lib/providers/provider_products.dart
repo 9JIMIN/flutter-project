@@ -6,6 +6,7 @@ import '../models/product.dart';
 class ProviderProducts with ChangeNotifier {
   List<Product> _list = [];
   List<Product> get list => _list;
+  DateTime oldDate;
 
   // add는 프로바이더를 이용하지 않음.
 
@@ -17,9 +18,14 @@ class ProviderProducts with ChangeNotifier {
   }
 
   // fetchDown
-  Future<void> fetchDown(DateTime date) async{
+  Future<void> fetchDown() async {
+    DateTime date = _list.last.createdAt;
     final productList = await DBHelperProduct.getBeforeProducts(date);
-    _list = _list + productList;
+    if (productList.isNotEmpty) {
+      if (_list.last.id != productList.last.id) {
+        _list = _list + productList;
+      }
+    }
     notifyListeners();
   }
 

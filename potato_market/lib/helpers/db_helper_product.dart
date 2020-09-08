@@ -55,7 +55,7 @@ class DBHelperProduct {
     final QuerySnapshot query = await FirebaseFirestore.instance
         .collection('products')
         .orderBy('createdAt', descending: true)
-        .where('createdAt', isGreaterThan: date) // 받은 시간이후의 문서
+        .where('createdAt', isLessThan: date)
         .limit(20)
         .get();
 
