@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../detail/detail_column.dart';
+import '../detail/detail_scaffold.dart';
 import '../../helpers/format_factory.dart';
 
 class ProductItem extends StatelessWidget {
@@ -31,7 +31,7 @@ class ProductItem extends StatelessWidget {
           behavior: HitTestBehavior.opaque,
           onTap: () {
             Navigator.of(context).pushNamed(
-              DetailColumn.routeName,
+              DetailScaffold.routeName,
               arguments: id, // 문서에 고유의 아이디를 인자로 쓰고 싶은데.. 뭐 없을까?
             );
           },

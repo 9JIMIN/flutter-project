@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import './storage_helper.dart';
 import '../models/profile.dart';
 
 class DBHelperProfile {
@@ -9,12 +10,18 @@ class DBHelperProfile {
       UserCredential user,
       String name,
       String email) async {
+    final imageUrl = await StorageHelper.getDefaultUserUrl();
     await FirebaseFirestore.instance
         .collection('profiles')
         .doc(user.user.uid)
         .set({
       'name': name,
       'email': email,
+      'image': imageUrl,
+      'sellProducts': [],
+      'buyProducts': [],
+      'likeProducts': [],
+      'temperature': 365,
     });
   }
 
@@ -25,6 +32,11 @@ class DBHelperProfile {
     final user = Profile(
       name: doc['name'],
       email: doc['email'],
+      image: doc['image'],
+      sellProducts: doc['sellProducts'],
+      buyProducts: doc['buyProducts'],
+      likeProducts: doc['likeProducts'],
+      temperature: doc['temperature'],
     );
     return user;
   }

@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:potato_market/providers/provider_products.dart';
-import 'package:potato_market/screens/detail/detail_column.dart';
 import 'package:provider/provider.dart';
 
 // screens
+import './screens/detail/detail_scaffold.dart';
 import './screens/auth/auth_scaffold.dart';
 import './screens/edit/edit_scaffold.dart';
 import './screens/chat/chat_listview.dart';
-import './screens/profile/profile_column.dart';
+import './screens/mypage/mypage_column.dart';
 import './screens/loading_screen.dart';
 import './screens/tab_screen.dart';
 
 // providers
 import './providers/provider_products.dart';
+
+// helpers
+import './helpers/custom_route.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,6 +52,12 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.brown,
           unselectedWidgetColor: Colors.black54,
           errorColor: Colors.red[800],
+          pageTransitionsTheme: PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: CustomPageTransitionBuilder(),
+                TargetPlatform.iOS: CustomPageTransitionBuilder(),
+              },
+            ),
         ),
         home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
@@ -63,10 +72,10 @@ class MyApp extends StatelessWidget {
           },
         ),
         routes: {
-          DetailColumn.routeName: (_) => DetailColumn(),
+          DetailScaffold.routeName: (_) => DetailScaffold(),
           EditScaffold.routeName: (_) => EditScaffold(),
           ChatListView.routeName: (_) => ChatListView(),
-          ProfileColumn.routeName: (_) => ProfileColumn(),
+          MyPageColumn.routeName: (_) => MyPageColumn(),
         },
       ),
     );

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:potato_market/screens/chat/chat_appbar.dart';
-import 'package:potato_market/screens/profile/profile_appbar.dart';
 
 import './market/market_listview.dart';
 import './market/market_appbar.dart';
 import './edit/edit_scaffold.dart';
 import './chat/chat_listview.dart';
-import './profile/profile_column.dart';
+import './mypage/mypage_column.dart';
+import './mypage/mypage_appbar.dart';
 
 class TabScreen extends StatefulWidget {
   static const routeName = '/';
@@ -31,13 +31,16 @@ class _TabScreenState extends State<TabScreen> {
     MarketAppBar(),
     null, // edit screen
     ChatAppBar(),
-    ProfileAppBar(),
+    MyPageAppBar(),
   ];
   final List<Widget> _bodys = [
-    MarketListView(),
+    TabBarView(children: [
+      MarketListView(),
+      Text("동네생활"),
+    ]),
     Text('글쓰기'), // IndexedStack에 null이면 에러남.
     ChatListView(),
-    ProfileColumn(),
+    MyPageColumn(),
   ];
 
   Widget _bottomNavigationBar(int selectedIndex) => BottomNavigationBar(
@@ -68,13 +71,16 @@ class _TabScreenState extends State<TabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _appbars[_selectedIndex],
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _bodys,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: _appbars[_selectedIndex],
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _bodys,
+        ),
+        bottomNavigationBar: _bottomNavigationBar(_selectedIndex),
       ),
-      bottomNavigationBar: _bottomNavigationBar(_selectedIndex),
     );
   }
 }

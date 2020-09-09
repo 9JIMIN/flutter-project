@@ -26,7 +26,18 @@ class StorageHelper{
     final ref = FirebaseStorage.instance
         .ref()
         .child('default-images')
-        .child('potato.png');
+        .child('default-product.png');
+    final url = await ref.getDownloadURL();
+    urls.add(url);
+    return urls;
+  }
+
+    static Future<List<String>> getDefaultUserUrl() async {
+    List<String> urls = List<String>();
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child('default-images')
+        .child('default-user.png');
     final url = await ref.getDownloadURL();
     urls.add(url);
     return urls;
