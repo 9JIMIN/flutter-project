@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+enum Categories {digital, clothes, food, }
 
 class EditForm extends StatefulWidget {
   final Function saveData;
@@ -12,6 +15,7 @@ class EditForm extends StatefulWidget {
 
 class _EditFormState extends State<EditForm> {
   String _title;
+  String _category;
   String _price;
   String _description;
 
