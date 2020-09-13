@@ -21,7 +21,8 @@ class FormatFactory {
     }).toList();
   }
 
-    // 날짜 변환기
+
+  // 날짜 변환기
   static String dateFormatter(DateTime createdAt) {
     List<String> hms = DateTime.now()
         .difference(createdAt)

@@ -1,40 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class MyPageAppBar extends StatefulWidget implements PreferredSizeWidget {
+class MyPageAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(60);
-
-  @override
-  _MyPageAppBarState createState() => _MyPageAppBarState();
-}
-
-class _MyPageAppBarState extends State<MyPageAppBar> {
-  final List<String> _dropdownValues = [
-    '로그아웃',
-    '회원탈퇴',
-  ];
-
   @override
   PreferredSizeWidget build(BuildContext context) {
     return AppBar(
       title: Text('나의 감자'),
       actions: [
-        DropdownButton(
-          icon: Icon(Icons.settings),
-          items: _dropdownValues
-              .map(
-                (value) => DropdownMenuItem(
-                  child: Text(value),
-                  value: value,
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton(
+              icon: Icon(Icons.settings, color: Colors.white,),
+              items: [
+                DropdownMenuItem(
+                  child: Text('로그아웃'),
+                  value: 1,
                 ),
-              )
-              .toList(),
-          onChanged: (String value) {
-            FirebaseAuth.instance.signOut();
-          },
-          value: _dropdownValues.first,
-        )
+                DropdownMenuItem(
+                  child: Text('회원탈퇴'),
+                  value: 2,
+                ),
+              ],
+              onChanged: (value) {
+                if (value == 1) {
+                  FirebaseAuth.instance.signOut();
+                }
+              },
+            ),
+          ),
+        ),
       ],
     );
   }

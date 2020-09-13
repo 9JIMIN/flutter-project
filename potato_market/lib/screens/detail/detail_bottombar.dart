@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class DetailBottomBar extends StatelessWidget {
+import '../../providers/provider_me.dart';
+
+class DetailBottomBar extends StatefulWidget {
   final product;
   DetailBottomBar(this.product);
+
+  @override
+  _DetailBottomBarState createState() => _DetailBottomBarState();
+}
+
+class _DetailBottomBarState extends State<DetailBottomBar> {
   @override
   Widget build(BuildContext context) {
+    final _isLike = Provider.of<ProviderMe>(context, listen: false)
+        .likeProducts
+        .contains(widget.product.id);
+    Future<void> _clickFavorite() async {
+      await Provider.of<ProviderMe>(context, listen: false)
+          .toggleLikeProductsId(widget.product.id);
+      setState(() {});
+    }
+
     return BottomAppBar(
       child: Container(
         height: 70,
@@ -12,8 +30,8 @@ class DetailBottomBar extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-              icon: Icon(Icons.favorite_border),
-              onPressed: () {},
+              icon: Icon(_isLike ? Icons.favorite : Icons.favorite_border),
+              onPressed: _clickFavorite,
             ),
             VerticalDivider(
               color: Colors.black54,
@@ -25,7 +43,7 @@ class DetailBottomBar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  product.price,
+                  widget.product.price,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 import './auth_form.dart';
 import '../../helpers/db_helper_profile.dart';
+import '../../helpers/auth_helper.dart';
+import '../../providers/provider_me.dart';
 
 class AuthScaffold extends StatefulWidget {
   @override
@@ -10,7 +12,6 @@ class AuthScaffold extends StatefulWidget {
 }
 
 class _AuthScaffoldState extends State<AuthScaffold> {
-  final _auth = FirebaseAuth.instance;
   var _isLoading = false;
 
   Future<void> _submitAuthForm(
@@ -20,28 +21,27 @@ class _AuthScaffoldState extends State<AuthScaffold> {
     bool isLogin,
     BuildContext ctx,
   ) async {
-    UserCredential authResult;
     try {
       setState(() {
         _isLoading = true;
       });
+      // 로그인
       if (isLogin) {
-        authResult = await _auth.signInWithEmailAndPassword(
-          email: email,
-          password: password,
+        await AuthHelper.signIn(
+          email,
+          password,
         );
-      } else {
-        authResult = await _auth.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
+      }
+      // 회원가입
+      else {
+        await AuthHelper.createUser(
+          email,
+          password,
         );
-
-        // DB에도 유저정보 저장하기
-        await DBHelperProfile.create(authResult, name, email);
-
-        setState(() {
-          _isLoading = false;
-        });
+        await DBHelperProfile.addProfile(
+          name,
+          email,
+        );
       }
     } catch (err) {
       var message = '에러발생';

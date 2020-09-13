@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:potato_market/providers/provider_products.dart';
 import 'package:provider/provider.dart';
 
 import './market_product_item.dart';
+import '../../providers/provider_me.dart';
+import '../../providers/provider_products.dart';
 
 class MarketListView extends StatefulWidget {
   @override
@@ -12,6 +13,14 @@ class MarketListView extends StatefulWidget {
 class _MarketListViewState extends State<MarketListView> {
   Future<void> fetchProducts() async {
     Provider.of<ProviderProducts>(context, listen: false).fetchUp();
+  }
+
+  Future<void> fetchProfile() async {
+    Provider.of<ProviderMe>(context, listen: false).fetchMyProfile();
+  }
+
+  Future<void> fetchLikeProducts() async {
+    Provider.of<ProviderMe>(context, listen: false).fetchMyLikeProductsId();
   }
 
   ScrollController _controller;
@@ -29,6 +38,9 @@ class _MarketListViewState extends State<MarketListView> {
     _controller = ScrollController();
     _controller.addListener(_scrollListener);
     fetchProducts();
+    fetchProfile();
+    fetchLikeProducts();
+    
   }
 
   @override
@@ -42,7 +54,7 @@ class _MarketListViewState extends State<MarketListView> {
     return Consumer<ProviderProducts>(
       builder: (_, products, __) => products.list.isEmpty
           ? Center(
-              child: CircularProgressIndicator(),
+              child: Text('등록된 제품이 없습니다.'),
             )
           : RefreshIndicator(
               onRefresh: fetchProducts,

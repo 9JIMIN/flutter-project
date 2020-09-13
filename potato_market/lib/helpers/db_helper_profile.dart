@@ -1,43 +1,76 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import './storage_helper.dart';
 import '../models/profile.dart';
+import './storage_helper.dart';
 
 class DBHelperProfile {
-  static Future<void> create(
-      // 유저 uid로 문서 생성.
-      UserCredential user,
-      String name,
-      String email) async {
-    final imageUrl = await StorageHelper.getDefaultUserUrl();
-    await FirebaseFirestore.instance
-        .collection('profiles')
-        .doc(user.user.uid)
-        .set({
+  // profile 생성
+  static Future<void> addProfile(
+    String name,
+    String email,
+  ) async {
+    final uid = FirebaseAuth.instance.currentUser.uid;
+    final defaultImageUrl = await StorageHelper.getDefaultUserUrl();
+    final myDoc = FirebaseFirestore.instance.collection('profiles').doc(uid);
+
+    await myDoc.set({
       'name': name,
       'email': email,
-      'image': imageUrl,
-      'sellProducts': [],
-      'buyProducts': [],
-      'likeProducts': [],
+      'image': defaultImageUrl,
+      'category': ['전자', '의류'],
+      'area': ['서울', '부산'],
       'temperature': 365,
     });
   }
 
-  static Future<Profile> findById(String id) async {
-    DocumentSnapshot snapshot =
-        await FirebaseFirestore.instance.collection('profiles').doc(id).get();
-    Map<String, dynamic> doc = snapshot.data();
-    final user = Profile(
+  // id로 profile 가져오기
+  static Future<Profile> getProfileById(String uid) async {
+    final myDoc = FirebaseFirestore.instance.collection('profiles').doc(uid);
+    final snapshot = await myDoc.get();
+    final Map<String, dynamic> doc = snapshot.data();
+
+    return Profile(
       name: doc['name'],
       email: doc['email'],
       image: doc['image'],
-      sellProducts: doc['sellProducts'],
-      buyProducts: doc['buyProducts'],
-      likeProducts: doc['likeProducts'],
+      area: doc['area'],
+      category: doc['category'],
       temperature: doc['temperature'],
     );
-    return user;
+  }
+
+  // likeProducts 전체 문서 가져오기
+  static Future<List<String>> getLikeProductsIdList(String uid) async {
+    final myLikeProductsId = await FirebaseFirestore.instance
+        .collection('profiles')
+        .doc(uid)
+        .collection('likeProductsId')
+        .get();
+    final snapshotList = myLikeProductsId.docs;
+    List<String> ids = [];
+    snapshotList.map((snapshot) => ids.add(snapshot.data()['id']));
+
+    return ids;
+  }
+
+  // likeProducts에 문서 추가하기
+  static Future<void> addLikeProductId(String uid, String productId) async {
+    await FirebaseFirestore.instance
+        .collection('profiles')
+        .doc(uid)
+        .collection('likeProductsId')
+        .doc(productId)
+        .set({});
+  }
+
+  // likeProducts에 문서 제거하기
+  static Future<void> deleteLikeProductId(String uid, String productId) async {
+    await FirebaseFirestore.instance
+        .collection('profiles')
+        .doc(uid)
+        .collection('likeProductsId')
+        .doc(productId)
+        .delete();
   }
 }

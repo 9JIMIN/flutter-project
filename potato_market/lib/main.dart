@@ -15,6 +15,7 @@ import './screens/tab_screen.dart';
 
 // providers
 import './providers/provider_products.dart';
+import './providers/provider_me.dart';
 
 // helpers
 import './helpers/custom_route.dart';
@@ -28,8 +29,11 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ProviderProducts(),
+    return MultiProvider(
+      providers: [
+        ListenableProvider<ProviderProducts>(create: (_) => ProviderProducts()),
+        ListenableProvider<ProviderMe>(create: (_) => ProviderMe()),
+      ],
       child: MaterialApp(
         title: 'potato market',
         theme: ThemeData(
@@ -53,11 +57,11 @@ class MyApp extends StatelessWidget {
           unselectedWidgetColor: Colors.black54,
           errorColor: Colors.red[800],
           pageTransitionsTheme: PageTransitionsTheme(
-              builders: {
-                TargetPlatform.android: CustomPageTransitionBuilder(),
-                TargetPlatform.iOS: CustomPageTransitionBuilder(),
-              },
-            ),
+            builders: {
+              TargetPlatform.android: CustomPageTransitionBuilder(),
+              TargetPlatform.iOS: CustomPageTransitionBuilder(),
+            },
+          ),
         ),
         home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),

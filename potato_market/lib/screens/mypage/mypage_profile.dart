@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
-import '../../models/profile.dart';
+
 import '../../helpers/db_helper_profile.dart';
 
-class DetailSeller extends StatelessWidget {
-  Future<Profile> getProfile(id) async {
-    Profile profile = await DBHelperProfile.getProfileById(id);
-    return profile;
+class MyPageProfile extends StatelessWidget {
+  final userId;
+  MyPageProfile(this.userId);
+
+  Future getUser() async {
+    final user = await DBHelperProfile.getProfileById(userId);
+    return user;
   }
 
-  final product;
-  DetailSeller(this.product);
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: getProfile(product.sellerId),
-        builder: (_, snapshot) {
-          if (snapshot.hasData) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed('/profile');
-              },
-              child: Row(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: FutureBuilder(
+          future: getUser(),
+          builder: (_, snapshot) {
+            if (snapshot.hasData) {
+              return Row(
                 children: [
                   CircleAvatar(
                     radius: 25,
@@ -41,17 +40,21 @@ class DetailSeller extends StatelessWidget {
                     ],
                   ),
                   Spacer(),
-                  Column(
-                    children: [Text('온도'), Icon(Icons.hot_tub)],
+                  FlatButton(
+                    child: Text('프로필 보기'),
+                    onPressed: () {},
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: BorderSide(color: Colors.black38),
+                    ),
                   )
                 ],
-              ),
-            );
-          } else {
+              );
+            }
             return Center(
               child: CircularProgressIndicator(),
             );
-          }
-        });
+          }),
+    );
   }
 }

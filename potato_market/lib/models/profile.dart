@@ -2,18 +2,16 @@ class Profile {
   final String name;
   final String email;
   final String image;
-  final List sellProducts;
-  final List buyProducts;
-  final List likeProducts;
+  final List area;
+  final List category;
   final int temperature;
 
   Profile({
     this.name,
     this.email,
     this.image,
-    this.sellProducts,
-    this.buyProducts,
-    this.likeProducts,
+    this.area,
+    this.category,
     this.temperature,
   });
 }
